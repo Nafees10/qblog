@@ -1,0 +1,38 @@
+<!-- Vars used:
+	title - blog title
+	addr - site address
+	content - content to show on dashboard
+ -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html>
+	<head>
+		<title>%title% - Dashboard</title>
+		<link rel="stylesheet" href="qs_dash.css">
+	</head>
+	<body>
+		<nav>
+			<ul class="menu">
+				<li>
+					Sidebar
+				</li>
+				<li>
+					<a href="%addr%">Site Home</a>
+				</li>
+				<li>
+					<a href="%addr%/dashboard.php?p=pages">Pages</a>
+				</li>
+				<li>
+					<a href="%addr%/dashboard.php?p=posts">Posts</a>
+				</li>
+				<li>
+					<a href="%addr%/dashboard.php?p=settings">Settings</a>
+				</li>
+			</ul>
+		</nav>
+		<div class=pageContent>
+			%warning%
+			%message%
+			%content%
+		</div>
+	</body>
+</html>

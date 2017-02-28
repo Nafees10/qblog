@@ -1,0 +1,37 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html>
+	<head>
+		<title>
+			%title%
+		</title>
+		<link rel="stylesheet" href="qs.css">
+	</head>
+	<body>
+		<header>
+			%title%<br>
+			<span class="small">%tagline%</span>
+		</header>
+		<nav>
+			<ul class="menu">
+				<li>
+					<a href="%addr%">Home</a>
+				</li>
+				%nav_pages%
+			</ul>
+		</nav>
+		<content>
+			%warning%
+			%message%
+			%content%
+			<article>%offset%</article>
+			<article class="footer">Copyright &copy; %title%</article>
+		</content>
+		<aside>
+			%aside%
+			<!--Login form for admin/editor-->
+			<content>
+				%members_area%
+			</content>
+		</aside>
+	</body>
+</html>
