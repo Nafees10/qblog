@@ -34,10 +34,49 @@ if ($current_user["type"]!="admin"){
 if (array_key_exists("p",$_GET)){
 	//now check whether to open post editor, settings, posts, or pages
 	if ($_GET["p"]=="editor"){
-		//check if ID was specified
+		//check if has to edit
 		$id = -1;
-		if (array_key_exists("id",$_GET)){
-			$id = intval($_GET["id"]);
+		if (array_key_exists("a",$_GET)){
+			if ($_GET["a"]=="edit" && array_key_exists("id",$_GET)){
+				$id = intval($_GET["id"]);
+			}
+			//check if it was a form submission
+			if (array_key_exists("post_name",$_POST) && 
+			array_key_exists("post_content",$_POST) && array_key_exists("type",$_POST)){
+				//edit/post it
+				if ($_GET["a"]=="new"){
+					if ($_POST["type"]=="page"){
+						$r = qb_page_add($_POST["post_heading"],$_POST["post_content"]);
+						if ($r==false){
+							$_SESSION["warning"] = qb_error_get();
+						}else{
+							$_SESSION["message"] = "Page added successfully!";
+						}
+					}else if ($_POST["type"]=="post"){
+						$r = qb_post_add($_POST["post_heading"],$_POST["post_content"]);
+						if ($r==false){
+							$_SESSION["warning"] = qb_error_get();
+						}else{
+							$_SESSION["message"] = "Post added successfully!";
+						}
+					}else{
+						$_SESSION["warning"] = "Failed to add content."
+					}
+				}else if ($_GET["a"]=="edit"){
+					if ($id > -1){
+						$new_content = array();
+						$new_content["heading"] = $_POST["post_heading"];
+						$new_content["content"] = $_POST["post_content"];
+						//update it
+						$r = qb_content_update($id,$new_content);
+						if ($r==false){
+							$_SESSION["warning"] = qb_error_get();
+						}else{
+							$_SESSION["message"] = "Content updated successfully!";
+						}
+					}
+				}
+			}
 		}
 		//echo post editor
 		echo_dashboard_editor($id);
@@ -54,9 +93,10 @@ if (array_key_exists("p",$_GET)){
 		echo_dashboard($title, $content);
 	}
 }else{
-	//echo dashboard home
-	echo_dashboard_index();
+	//echo dashboard home (AKA posts)
+	echo_dashboard_posts();
 }
 //do actions specified in $_GET
+//page/post delete
 
 ?>
