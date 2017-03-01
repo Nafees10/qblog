@@ -49,18 +49,18 @@ function qb_content_list_all(){
 	return $r;
 }
 
-function qb_content_update($pid, $page){
+function qb_content_update($pid, $content){
 	$conn = qb_conn_get();
-	//$page = ["content","heading"]
+	//$content = ["content","heading"]
 	$pid_str = qb_str_process(strval($pid));
-	$page["content"] = qb_str_process($page["content"]);
-	$page["heading"] = qb_str_process(strip_tags($page["heading"]));
+	$content["content"] = qb_str_process($content["content"]);
+	$content["heading"] = qb_str_process(strip_tags($content["heading"]));
 	//update heading & content
 	
 	$user = qb_user_get($_SESSION["uid"]);
 	if ($user["type"]=="admin" || $user["type"]=="editor"){
-		$query = "UPDATE content SET heading='".$page["heading"]."', content='".$page["content"].
-			"' WHERE id=".$pid_str;
+		$query = "UPDATE content SET heading='".$content["heading"].
+			"', content='".$content["content"]."' WHERE id=".$pid_str;
 		if ($conn->query($query)==false){
 			$error = "Failed to edit content";
 			if (qb_debug_get()){
