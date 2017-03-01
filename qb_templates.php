@@ -78,18 +78,26 @@ function echo_dashboard_editor($id){//$id = -1 to create new content
 	$content = "";
 	$heading = "";
 	$action = "new";
+	$post_checked = " checked";
+	$page_checked = "";
 	if ($id>=0){
 		$con = qb_content_get($id);
 		$heading = $con["heading"];
 		$content = $con["content"];
+		if ($con["type"] == "page"){
+			$post_checked = "";
+			$page_checked = " checked";
+		}
 		$action = "edit";
 	}
 	$id = strval($id);
 	
 	
 	$format = file_get_contents("templates/dashboard_editor.html");
-	$search = array("%id%","%action%","%heading%","%content%","%addr%");
-	$replace = array($id, $action, $heading, $content, qb_addr_get());
+	$search = array("%id%","%action%","%heading%","%content%","%addr%",
+		"%post_checked%","%post_checked%");
+	$replace = array($id, $action, $heading, $content, qb_addr_get(),
+		$post_checked,$page_checked);
 	echo_dashboard($title, str_replace($search, $replace, $format));
 }
 
