@@ -5,7 +5,7 @@ include_once("qb_users.php");//used by add_post
 function qb_content_get($pid){
 	$conn = qb_conn_get();
 	
-	$query = "SELECT heading, content FROM content WHERE id=".qb_str_process(strval($pid));
+	$query = "SELECT heading, content, type FROM content WHERE id=".qb_str_process(strval($pid));
 	$res = $conn->query($query);
 	if ($res){
 		if ($res->num_rows>0){
@@ -20,7 +20,7 @@ function qb_content_get($pid){
 
 function qb_content_list($offset, $count){
 	$conn = qb_conn_get();
-	$query = "SELECT id, heading FROM content LIMIT ".
+	$query = "SELECT id, heading, type FROM content LIMIT ".
 		qb_str_process(strval($count))." OFFSET ".qb_str_process(strval($offset));
 	$res = $conn->query($query);
 	$r = false;
@@ -36,7 +36,7 @@ function qb_content_list($offset, $count){
 
 function qb_content_list_all(){
 	$conn = qb_conn_get();
-	$query = "SELECT id, heading FROM content";
+	$query = "SELECT id, heading, type FROM content";
 	$res = $conn->query($query);
 	$r = false;
 	if ($res && $res->num_rows>0){
