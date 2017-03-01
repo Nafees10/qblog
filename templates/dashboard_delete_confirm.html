@@ -1,0 +1,10 @@
+<!-- Vars: content_type: either pages or posts; header: header of content-to-delete;
+id: ID of content-to-delete; addr: ... -->
+<content>
+	<header>Confirm Deletion</header>
+	<hr>
+	Are you sure you want to delete "%header%"?<br>
+	This action can't be reversed!
+	<a href="%addr/dashboard.php?p=%content_type%&a=delete&id=%id%" class=btn style="margin-left: 5px;">Yes</a>
+	<a href="%addr/dashboard.php?p=%content_type" class=btn style="margin-right: 5px;">No</a>
+</content>
