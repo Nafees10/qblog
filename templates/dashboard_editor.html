@@ -1,4 +1,4 @@
-<form class="post" action="%addr%/dashboard.php?from=editor&a=%action%&id=%id%" method=POST>
+<form class="post" action="%addr%/dashboard.php?p=editor&a=%action%&id=%id%" method=POST>
 	<content class=postEdit>
 		<label>Post Name:</label>
 		<input type=text name=post_name value="%heading%">
@@ -6,6 +6,11 @@
 		<textarea style="min-width: 100%; min-height: 250px;">%content%</textarea>
 	</content>
 	<content class=postOptions>
+		<header>Content Type</header>
+		<hr>
+		<input type="radio" name="type" value="post"%post_checked%>Post<br>
+		<input type="radio" name="type" value="page"%page_checked%>Page<br>
+		<hr>
 		<input type="submit" value="Post/Update" class="blockBtn">
 	</content>
 </form>
