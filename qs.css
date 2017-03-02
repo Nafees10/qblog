@@ -161,6 +161,16 @@ content{
 	width: 90%;
 }
 
+content header, article header{
+	line-height: 24px;
+	height: auto;
+	font-size: 18;
+	font-weight: 500;
+	display: block;
+	text-align: left;
+	padding: 0;
+}
+
 article{
 	background-color: #ffffff;
 	color: #000000;

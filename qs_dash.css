@@ -295,7 +295,9 @@ table td, table th{
 	
 	/*padding: 5px;*/
 	border-collapse: collapse;
-	text-align: center;
+	text-align: left;
+	padding-left: 10px;
+	padding-right: 10px;
 }
 
 table td a{
