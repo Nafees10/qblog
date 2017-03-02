@@ -93,11 +93,6 @@ ul.dropdown li{
 	display: block;
 }
 
-body.dashboard ul.dropdown li{
-	height: 20px;
-	line-height: 16px;
-}
-
 ul.dropdown li:hover{
 	background-color: #bfbfbf;
 }
