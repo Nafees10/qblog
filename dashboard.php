@@ -36,12 +36,13 @@ if (array_key_exists("p",$_GET)){
 	if ($_GET["p"]=="editor"){
 		//check if has to edit
 		$id = -1;
+		if (array_key_exists("id",$_GET)){
+			$id = intval($_GET["id"]);
+		}
+		
 		if (array_key_exists("a",$_GET)){
-			if ($_GET["a"]=="edit" && array_key_exists("id",$_GET)){
-				$id = intval($_GET["id"]);
-			}
 			//check if it was a form submission
-			if (array_key_exists("post_name",$_POST) && 
+			if (array_key_exists("post_heading",$_POST) && 
 			array_key_exists("post_content",$_POST) && array_key_exists("type",$_POST)){
 				//edit/post it
 				if ($_GET["a"]=="new"){
@@ -60,7 +61,7 @@ if (array_key_exists("p",$_GET)){
 							$_SESSION["message"] = "Post added successfully!";
 						}
 					}else{
-						$_SESSION["warning"] = "Failed to add content."
+						$_SESSION["warning"] = "Failed to add content.";
 					}
 				}else if ($_GET["a"]=="edit"){
 					if ($id > -1){
@@ -81,11 +82,33 @@ if (array_key_exists("p",$_GET)){
 		//echo post editor
 		echo_dashboard_editor($id);
 	}else if ($_GET["p"]=="pages"){
+		//check if has to delete
+		if (array_key_exists("a",$_GET) && array_key_exists("id",$_GET)){
+			$r = qb_content_remove(intval($_GET["id"]));
+			if ($r==false){
+				$_SESSION["warning"] = "Failed to remove content<br>".qb_error_get();
+			}else{
+				$_SESSION["message"] = "Content removed successfully";
+			}
+		}
 		echo_dashboard_pages();
 	}else if ($_GET["p"]=="posts"){
+		//check if has to delete
+		if (array_key_exists("a",$_GET) && array_key_exists("id",$_GET)){
+			$r = qb_content_remove(intval($_GET["id"]));
+			if ($r==false){
+				$_SESSION["warning"] = "Failed to remove content<br>".qb_error_get();
+			}else{
+				$_SESSION["message"] = "Content removed successfully";
+			}
+		}
 		echo_dashboard_posts();
 	}else if ($_GET["p"]=="settings"){
+		//check if has to update
+		
 		echo_dashboard_settings();
+	}else if ($_GET["p"]=="delete" && array_key_exists("id",$_GET)){
+		echo_dashboard_delete(intval($_GET["id"]));
 	}else{
 		$title = qb_setting_get("title");
 		$content = '<content><header>An error occurred :(</header><hr>'.
