@@ -12,13 +12,13 @@ function echo_dashboard($title,$content){
 	if (array_key_exists("warning",$_SESSION)){
 		$warning = $_SESSION["warning"];
 		unset($_SESSION["warning"]);
-		$format = file_get_contents("templates/index_warning.html");
+		$format = file_get_contents("templates/dashboard_warning.html");
 		$warning = str_replace("%warning%",$warning,$format);
 	}
 	if (array_key_exists("message",$_SESSION)){
 		$message = $_SESSION["message"];
 		unset($_SESSION["message"]);
-		$format = file_get_contents("templates/index_message.html");
+		$format = file_get_contents("templates/dashboard_message.html");
 		$message = str_replace("%message%",$message,$format);
 	}
 	
@@ -109,6 +109,22 @@ function echo_dashboard_settings(){
 	$search = array("%title%","%tagline%");
 	$replace = array($title, $tagline);
 	echo_dashboard($title,str_replace($search, $replace, $format));
+}
+
+function echo_dashboard_delete($id){
+	$title = qb_setting_get("title");
+	$tagline = qb_setting_get("tagline");
+	
+	$con = qb_content_get($id);
+	$content_type = $con["type"].'s';
+	$header = $con["heading"];
+	$id = strval($id);
+	$addr = qb_addr_get();
+	
+	$format = file_get_contents("templates/dashboard_delete_confirm.html");
+	$search = array("%content_type%","%header%","%id%","%addr%");
+	$replace = array($content_type, $header, $id, $addr);
+	echo_dashboard($title, str_replace($search,$replace,$format));
 }
 
 //now for main index page
