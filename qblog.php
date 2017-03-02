@@ -8,7 +8,7 @@ $qb_debug = false;
 $qb_error = null;
 
 function qb_addr_get(){
-	return $_SERVER["HTTP_HOST"]/*"http://localhost/qblog"*/;
+	return "http://".$_SERVER["HTTP_HOST"]/*"http://localhost/qblog"*/;
 }
 
 function qb_error_get(){
