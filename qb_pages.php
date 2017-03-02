@@ -10,7 +10,9 @@ function qb_page_get($pid){
 	$res = $conn->query($query);
 	if ($res){
 		if ($res->num_rows>0){
-			return $res->fetch_assoc();
+			$r = $res->fetch_assoc();
+			$r["content"] = nl2br($r["content"]);
+			return $r;
 		}else{
 			qb_error_set("Page not found");
 			return false;
