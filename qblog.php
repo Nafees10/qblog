@@ -4,11 +4,11 @@ include_once ("qb_users.php");
 include_once ("qb_posts.php");
 
 $qb_conn = null;
-$qb_debug = true;
+$qb_debug = false;
 $qb_error = null;
 
 function qb_addr_get(){
-	return /*$_SERVER["HTTP_HOST"]*/"http://localhost/qblog";
+	return $_SERVER["HTTP_HOST"]/*"http://localhost/qblog"*/;
 }
 
 function qb_error_get(){
