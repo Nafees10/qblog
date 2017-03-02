@@ -10,7 +10,9 @@ function qb_post_get($pid){
 	$res = $conn->query($query);
 	if ($res){
 		if ($res->num_rows>0){
-			return $res->fetch_assoc();
+			$r = $res->fetch_assoc();
+			$r["content"] = nl2br($r["content"]);
+			return $r;
 		}else{
 			qb_error_set("Post not found");
 			return false;
@@ -49,10 +51,11 @@ function qb_post_add($heading, $content){
 function qb_post_list($offset, $count, $content=false){
 	$conn = qb_conn_get();
 	if ($content){
-		$query = "SELECT id, heading, content FROM content WHERE type='post' LIMIT ".
-			qb_str_process(strval($count))." OFFSET ".qb_str_process(strval($offset));
+		$query = "SELECT id, heading, content FROM content WHERE type='post' ORDER BY id DESC".
+			" LIMIT ".qb_str_process(strval($count))." OFFSET ".
+			qb_str_process(strval($offset));
 	}else{
-		$query = "SELECT id, heading FROM content WHERE type='post' LIMIT ".
+		$query = "SELECT id, heading FROM content WHERE type='post' ORDER BY id DESC LIMIT ".
 			qb_str_process(strval($count))." OFFSET ".qb_str_process(strval($offset));
 	}
 	
@@ -62,6 +65,9 @@ function qb_post_list($offset, $count, $content=false){
 		$i = 0;
 		$r = array_fill(0,$res->num_rows, null);
 		while ($r[$i] = $res->fetch_assoc()){
+			if ($content){
+				$r[$i]["content"] = nl2br($r[$i]["content"]);
+			}
 			$i++;
 		}
 	}
@@ -82,6 +88,9 @@ function qb_post_list_all($content=false){
 		$i = 0;
 		$r = array_fill(0,$res->num_rows, null);
 		while ($r[$i] = $res->fetch_assoc()){
+			if ($content){
+				$r[$i]["content"] = nl2br($r[$i]["content"]);
+			}
 			$i++;
 		}
 	}
