@@ -230,15 +230,22 @@ form.post content.postOptions{
 /*<BUTTONS>*/
 /*links*/
 a:link, a:visited, a:hover, a:active{
-	color: auto;
+	color: #4d94ff;
 	text-decoration: none;
 }
 ul.menu a:link, ul.menu a:visited, ul.menu a:hover, ul.menu a:active{
 	color: #ffffff;
 }
-a.btn{
+a.btn:link, a.btn:visited, a.btn:hover, a.btn:active{
 	color: #ffffff;
+	text-decoration: none;
 }
+a.blockBtn:link, a.blockBtn:visited, a.blockBtn:hover, a.blockBtn:active{
+	color: #ffffff;
+	text-decoration: none;
+}
+/*</>*/
+
 .btn{
 	background-color: #000000;
 	color: #ffffff;
