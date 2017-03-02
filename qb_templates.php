@@ -193,7 +193,7 @@ function echo_index_posts($offset){
 	$new_offset = $offset+1;
 	$addr = qb_addr_get();
 	$post_format = file_get_contents("templates/index_post.html");
-	$posts = qb_post_list($offset*20,20,true);
+	$posts = qb_post_list($offset*10,10,true);
 	$count = count($posts)-1;
 	$search = array("%addr%","%id%","%heading%","%content%");
 	$content = "";
@@ -203,7 +203,7 @@ function echo_index_posts($offset){
 	}
 	//check if there are more posts, if yes, echo the offset_previous button too
 	$off = "";
-	if (qb_post_count() > $new_offset*20){
+	if (qb_post_count() > $new_offset*10){
 		$off = file_get_contents("templates/index_offset_prev.html");
 		$search = array("%addr%","%new_offset%");
 		$replace = array($addr,strval($new_offset));
@@ -212,7 +212,7 @@ function echo_index_posts($offset){
 	if ($offset > 0){
 		$format = file_get_contents("templates/index_offset_next.html");
 		$search = array("%addr%","%new_offset%");
-		$new_offset = $new_offset - 1;
+		$new_offset = $new_offset - 2;
 		if ($new_offset < 0){
 			$new_offset = 0;
 		}
