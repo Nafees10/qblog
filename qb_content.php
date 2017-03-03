@@ -2,14 +2,14 @@
 include_once("qblog.php");//base of qblog
 include_once("qb_users.php");//used by add_post
 
-function qb_content_get($pid, nl_to_br=false){
+function qb_content_get($pid, $nl_to_br=false){
 	$conn = qb_conn_get();
 	
 	$query = "SELECT heading, content, type FROM content WHERE id=".qb_str_process(strval($pid));
 	$res = $conn->query($query);
 	if ($res){
 		if ($res->num_rows>0){
-			if (nl_to_br){
+			if ($nl_to_br){
 				$r = $res->fetch_assoc();
 				$r["content"] = nl2br($r["content"]);
 				return $r;
