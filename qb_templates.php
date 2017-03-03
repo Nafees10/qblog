@@ -176,7 +176,7 @@ function echo_index_base($addr,$content,$off=""){
 }
 
 function echo_index_content($id){
-	$con = qb_content_get($id);
+	$con = qb_content_get($id, true);
 	$content = $con["content"];
 	$heading = $con["heading"];
 	$addr = qb_addr_get();
