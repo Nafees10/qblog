@@ -21,7 +21,7 @@ if ($current_user == false){
 }
 if ($current_user["type"]!="admin"){
 	header("Location: ".$addr);
-	$_SESSION["message"] = 'Your account cannot access post editor.';
+	$_SESSION["message"] = 'Your account cannot access dashboard.';
 	die ("Only admins can access post editor.");
 }
 /*$_GET arguments:
