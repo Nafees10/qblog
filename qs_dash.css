@@ -12,7 +12,7 @@ body{
 
 div.pageContent{
 	height: 100%;
-	width: auto;
+	width: 100%;
 	padding-left: 100px;
 	padding-top: 5px;
 	padding-bottom: 5px;
@@ -83,6 +83,9 @@ nav:hover{
 		padding-left: 120px;
 		padding-top: 30px;
 	}
+	div.pageContent{
+		width: 95%;
+	}
 }
 
 ul.menu{
@@ -130,9 +133,17 @@ content{
 		width: 45%;
 		max-width: 450px;
 	}
-	content.fullWidth{
+	content.fullWidth, content.warning, content.message{
 		max-width: none;
 		width: 100%;
+	}
+	content.warning{
+		border-color: #ff0000;
+		border-width: 5px;
+	}
+	content.message{
+		border-color: #00ff00;
+		border-width: 5px;
 	}
 }
 
