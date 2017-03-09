@@ -10,7 +10,7 @@ $addr = qb_addr_get();
 //is logged in?
 if (array_key_exists("uid",$_SESSION)==false){
 	header("Location: ".$addr);
-	die ("You must be logged in to access post editor.<br>Redirecting to index page...");
+	die ("You must be logged in to access dashboard.<br>Redirecting to index page...");
 }
 $current_user = qb_user_get($_SESSION["uid"]);
 if ($current_user == false){
@@ -105,7 +105,16 @@ if (array_key_exists("p",$_GET)){
 		echo_dashboard_posts();
 	}else if ($_GET["p"]=="settings"){
 		//check if has to update
-		
+		if (array_key_exists("new_title",$_POST) && array_key_exists("new_tagline",$_POST)){
+			//has to update settings
+			if (qb_setting_modify("title",$_POST["new_title"]) == false){
+				$_SESSION["warning"] = "Failed to modify settings<br>".qb_error_get();
+			}else if (qb_setting_modify("tagline",$_POST["new_tagline"]) == false){
+				$_SESSION["warning"] = "Failed to modify settings<br>".qb_error_get();
+			}else{
+				$_SESSION["message"] = "Settings updated successfully";
+			}
+		}
 		echo_dashboard_settings();
 	}else if ($_GET["p"]=="delete" && array_key_exists("id",$_GET)){
 		echo_dashboard_delete(intval($_GET["id"]));
