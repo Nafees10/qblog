@@ -45,24 +45,36 @@ if (array_key_exists("a",$_GET)){
 		header("Location: ".$addr);
 		die("Redirecting to index page");
 	}
+}//set all the vars
+template_var_add("%title%", qb_setting_get("title"));
+template_var_add("%tagline%", qb_setting_get("tagline"));
+template_var_add("%content%", qb_setting_get(""));
+template_var_add("%offset%", qb_setting_get(""));
+template_var_add("%aside%", qb_setting_get("aside_content"));
+template_var_add("%addr%", $addr);
+if ($current_user === false){
+	template_open_as_var("%members_area%","login_form");
+}else{
+	template_open_as_var("%members_area%", "members_area");
 }
+//get the nav pages
+$nav = "";
+$pages = qb_page_list_all();
+$count = count($pages)-1;
+for ($i = 0; $i < $count; $i ++){
+	template_var_add("%heading%", $pages[$i]["heading"]);
+	template_var_add("%id%", $pages[$i]["id"]);
+	$nav .= template_open("index_nav_page");
+}
+template_var_add("%nav_pages%", $nav);
 //echo page contents:
 if (array_key_exists("con",$_GET)){
 	//echo a specific page/post
-	echo_index_content($_GET["con"]);
+	$con = qb_content_get(intval($_GET["con"]));
+	template_var_add("%content%", $con["content"]);
+	template_var_add("%heading%", $con["heading"]);
+	template_open_as_var("%content%", "index_content");
 }else{
-	//set all the vars
-	template_var_add("%title%", qb_setting_get("title"));
-	template_var_add("%tagline%", qb_setting_get("tagline"));
-	template_var_add("%content%", qb_setting_get(""));
-	template_var_add("%offset%", qb_setting_get(""));
-	template_var_add("%aside%", qb_setting_get("aside_content"));
-	template_var_add("%addr%", $addr);
-	if ($current_user === false){
-		template_open_as_var("%members_area%","login_form");
-	}else{
-		template_open_as_var("%members_area%", "members_area");
-	}
 	//echo the blog's home (i.e show the posts)
 	if (qb_post_count() == 0){
 		qb_message_add("No posts found.");
@@ -85,6 +97,7 @@ if (array_key_exists("con",$_GET)){
 		for ($i = 0; $i < $count; $i++){
 			template_var_add("%heading%",$posts[$i]["heading"]);
 			template_var_add("%content%",$posts[$i]["content"]);
+			template_var_add("%id%", $posts[$i]["id"]);
 			$content .= template_open("index_post");
 		}
 		//put content in var
@@ -109,14 +122,14 @@ if (array_key_exists("con",$_GET)){
 			}else{
 				template_var_add("%addr_prev%", $addr."/index.php?p=".$_GET["p"]."&offset=".strval($offset));
 			}
-			template_open_var("%offset%", "offset");
+			template_open_var("%offset%", "index_offset");
 		}else{
 			template_var_add("%offset%", "");
 		}
 	}
 	
-	//finally echo it!
-	template_echo("index");
 }
+//finally echo it!
+template_echo("index");
 
 ?>
