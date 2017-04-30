@@ -43,25 +43,41 @@ function template_echo($fname){
 	global $template_vars;
 	//check if there's a warning
 	if (array_key_exists("warning", $_SESSION)){
-		$template_vars["%warning%"] = nl2br($_SESSION["warning"]);
-		if ($fname == "dashboard"){
-			$template_vars["%warning%"] = template_open("dashboard_warning");
-		}else{
-			$template_vars["%warning%"] = template_open("index_warning");
+		$warnings = qb_warning_get();
+		if ($warnings !== false){
+			//insert warnings
+			$count = count($warnings);
+			$warn_text = "";
+			for ($i = 0; $i < $count; $i ++){
+				template_var_add("%warning%",$warnings[$i]);
+				if ($fname == "dashboard"){
+					$warn_text .= template_open("dashboard_warning");
+				}else{
+					$warn_text .= template_open("index_warning");
+				}
+			}
+			template_var_add("%warning%", $warn_text);
 		}
-		unset($_SESSION["warning"]);
 	}else{
 		$template_vars["%warning%"] = "";
 	}
 	//check if there's a message
 	if (array_key_exists("message", $_SESSION)){
-		$template_vars["%message%"] = nl2br($_SESSION["message"]);
-		if ($fname == "dashboard"){
-			$template_vars["%message%"] = template_open("dashboard_message");
-		}else{
-			$template_vars["%message%"] = template_open("index_message");
+		$messages = qb_message_get();
+		if ($messages !== false){
+			//insert warnings
+			$count = count($messages);
+			$message_text = "";
+			for ($i = 0; $i < $count; $i ++){
+				template_var_add("%message%",$messages[$i]);
+				if ($fname == "dashboard"){
+					$message_text .= template_open("dashboard_message");
+				}else{
+					$message_text .= template_open("index_message");
+				}
+			}
+			template_var_add("%message%", $message_text);
 		}
-		unset($_SESSION["message"]);
 	}else{
 		$template_vars["%message%"] = "";
 	}
