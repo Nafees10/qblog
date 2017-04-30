@@ -1,7 +1,7 @@
 <?php
 include_once("qblog.php");
-/*include_once("qb_posts.php");
-include_once("qb_pages.php");*/
+include_once("qb_posts.php");
+include_once("qb_pages.php");
 include_once("qb_users.php");
 include_once("qb_templates.php");
 qb_connect();
@@ -30,8 +30,22 @@ if ($current_user["type"]!="admin"){
  * Post editor arguments:
  * id - if specified, then you're editing, else, creating new content
  */
+$echo_offset = false;
+$offset_next = false;
+$offset_prev = false;
+$offset = 0;
+if (array_key_exists("offset", $_GET)){
+	$offset = intval($_GET["offset"]);
+}
+if ($offset > 0){
+	$offset_prev = true;
+}
+template_var_add("%title%", qb_setting_get("title"));
+template_var_add("%tagline%", qb_setting_get("tagline"));
+template_var_add("%addr%", $addr);
 //Now code to deal with dashboard home, post editor, and settings editor
 if (array_key_exists("p",$_GET)){
+	//set all the vars
 	//now check whether to open post editor, settings, posts, or pages
 	if ($_GET["p"]=="editor"){
 		//check if has to edit
@@ -39,6 +53,9 @@ if (array_key_exists("p",$_GET)){
 		if (array_key_exists("id",$_GET)){
 			$id = intval($_GET["id"]);
 		}
+		//mark post and page as unchecked
+		template_var_add("%post_checked%", " ");
+		template_var_add("%page_checked%", " ");
 		
 		if (array_key_exists("a",$_GET)){
 			//check if it was a form submission
@@ -53,6 +70,8 @@ if (array_key_exists("p",$_GET)){
 						}else{
 							qb_message_add("Page added successfully!");
 						}
+						//mark page as checked
+						template_var_add("%page_checked%", " checked");
 					}else if ($_POST["type"]=="post"){
 						$r = qb_post_add($_POST["post_heading"],$_POST["post_content"]);
 						if ($r==false){
@@ -60,6 +79,8 @@ if (array_key_exists("p",$_GET)){
 						}else{
 							qb_message_add("Post added successfully!");
 						}
+						//mark post as checked
+						template_var_add("%post_checked%", " checked");
 					}else{
 						qb_warning_add("Failed to add content.");
 					}
@@ -78,9 +99,23 @@ if (array_key_exists("p",$_GET)){
 					}
 				}
 			}
+		}else{
+			template_var_add("%post_checked%", " checked");
 		}
-		//echo post editor
-		echo_dashboard_editor($id);
+		//echo the post/content editor
+		//check if there was content, if yes, show that
+		template_var_add("%id%", $id);
+		if ($id >= 0){
+			$con = qb_content_get($id);
+			template_var_add("%action%", "edit");
+			template_var_add("%heading%", $con["heading"]);
+			template_var_add("%content%", $con["content"]);
+		}else{
+			template_var_add("%action%", "new");
+			template_var_add("%heading%", "");
+			template_var_add("%content%", "");
+		}
+		template_open_as_var("%content%", "dashboard_editor");
 	}else if ($_GET["p"]=="pages"){
 		//check if has to delete
 		if (array_key_exists("a",$_GET) && array_key_exists("id",$_GET)){
@@ -91,7 +126,22 @@ if (array_key_exists("p",$_GET)){
 				qb_message_add("Content removed successfully");
 			}
 		}
-		echo_dashboard_pages();
+		//echo em
+		$pages = qb_page_list($offset*20, 20);
+		$count = count($pages)-1;
+		$table = "";
+		for ($i = 0; $i < $count; $i ++){
+			template_var_add("%id%", $pages[$i]["id"]);
+			template_var_add("%heading%", $pages[$i]["heading"]);
+			$table .= template_open("dashboard_page");
+		}
+		template_var_add("%pages%", $table);
+		template_open_as_var("%content%", "dashboard_pages");
+		//now for the offset nav...
+		if (qb_page_count() > ($offset*20) + 20){
+			$offset_next = true;
+			$echo_offset = true;
+		}
 	}else if ($_GET["p"]=="posts"){
 		//check if has to delete
 		if (array_key_exists("a",$_GET) && array_key_exists("id",$_GET)){
@@ -102,7 +152,22 @@ if (array_key_exists("p",$_GET)){
 				qb_message_add("Content removed successfully");
 			}
 		}
-		echo_dashboard_posts();
+		//echo em
+		$posts = qb_post_list($offset*20, 20);
+		$count = count($posts)-1;
+		$table = "";
+		for ($i = 0; $i < $count; $i ++){
+			template_var_add("%id%", $posts[$i]["id"]);
+			template_var_add("%heading%", $posts[$i]["heading"]);
+			$table .= template_open("dashboard_post");
+		}
+		template_var_add("%posts%", $table);
+		template_open_as_var("%content%", "dashboard_posts");
+		//now for the offset nav...
+		if (qb_page_count() > ($offset*20) + 20){
+			$offset_next = true;
+			$echo_offset = true;
+		}
 	}else if ($_GET["p"]=="settings"){
 		//check if has to update
 		if (array_key_exists("new_title",$_POST) && array_key_exists("new_tagline",$_POST)){
@@ -115,20 +180,61 @@ if (array_key_exists("p",$_GET)){
 				qb_message_add("Settings updated successfully");
 			}
 		}
-		echo_dashboard_settings();
+		template_open_as_var("%content%", "dashboard_settings");
 	}else if ($_GET["p"]=="delete" && array_key_exists("id",$_GET)){
-		echo_dashboard_delete(intval($_GET["id"]));
+		$con = qb_content_get(intval($_GET["id"]));
+		template_var_add("%content_type%", $con["type"].'s');
+		template_var_add("%header%", $con["heading"]);
+		template_var_add("%id%", $_GET["id"]);
+		
+		template_open_as_var("%content%", "dashboard_delete_confirm");
 	}else{
-		$title = qb_setting_get("title");
-		$content = '<content><header>An error occurred :(</header><hr>'.
-			'The GET query is invalid, please try again</content>';
-		echo_dashboard($title, $content);
+		template_var_add("%content%", '<content><header>An error occurred :(</header><hr>'.
+			'The GET query is invalid. Try opening another page...</content>');
 	}
 }else{
-	//echo dashboard home (AKA posts)
-	echo_dashboard_posts();
+	//check if has to delete
+		if (array_key_exists("a",$_GET) && array_key_exists("id",$_GET)){
+			$r = qb_content_remove(intval($_GET["id"]));
+			if ($r==false){
+				qb_warning_add("Failed to remove content<br>".qb_error_get());
+			}else{
+				qb_message_add("Content removed successfully");
+			}
+		}
+		//echo em
+		$posts = qb_post_list($offset*20, 20);
+		$count = count($posts)-1;
+		$table = "";
+		for ($i = 0; $i < $count; $i ++){
+			template_var_add("%id%", $posts[$i]["id"]);
+			template_var_add("%heading%", $posts[$i]["heading"]);
+			$table .= template_open("dashboard_post");
+		}
+		template_var_add("%posts%", $table);
+		template_open_as_var("%content%", "dashboard_posts");
+		//now for the offset nav...
+		if (qb_page_count() > ($offset*20) + 20){
+			$offset_next = true;
+			$echo_offset = true;
+		}
 }
-//do actions specified in $_GET
-//page/post delete
+//offset nav
+if ($echo_offset){
+	if ($offset_next){
+		template_var_add("%addr_next%", $addr."/index.php?p=".$_GET["p"]."&offset=".strval($offset+1));
+	}else{
+		template_var_add("%addr_next%", $addr."/index.php?p=".$_GET["p"]."&offset=".strval($offset));
+	}
+	if ($offset_prev){
+		template_var_add("%addr_prev%", $addr."/index.php?p=".$_GET["p"]."&offset=".strval($offset-1));
+	}else{
+		template_var_add("%addr_prev%", $addr."/index.php?p=".$_GET["p"]."&offset=".strval($offset));
+	}
+	template_open_var("%offset%", "index_offset");
+}else{
+	template_var_add("%offset%", "");
+}
+template_echo("dashboard");
 
 ?>
