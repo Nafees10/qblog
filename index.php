@@ -10,8 +10,8 @@ qb_connect();
 $addr = qb_addr_get();
 $current_user = false;
 //check if logged in
-if (array_key_exists("uid",$_SESSION)==true){
-	$currect_user = qb_user_get($_SESSION["uid"]);
+if (array_key_exists("uid",$_SESSION)){
+	$current_user = qb_user_get($_SESSION["uid"]);
 }
 //check if login was attempted
 if (array_key_exists("login_username",$_POST) && array_key_exists("login_password",$_POST)){
@@ -26,14 +26,14 @@ if (array_key_exists("login_username",$_POST) && array_key_exists("login_passwor
 		$username = $_POST["login_username"];
 		$password = $_POST["login_password"];
 		$uid = qb_login_verify($username, $password);
-		if ($uid==0){
-			$_SESSION["message"] = 'Login failed';
+		if ($uid===false || $uid === 0){
+			qb_message_add("Login failed");
 		}else{
 			$_SESSION["uid"] = $uid;
-			$_SESSION["message"] = 'Login successful';
+			qb_message_add("Login successful");
 		}
 	}else{
-		$_SESSION["warning"] = 'You\'ve used all your login attempts.';
+		qb_warning_add("You have used all login attempts...");
 	}
 	header("Location: ".$addr);
 	die("Redirecting to index page");
@@ -51,15 +51,72 @@ if (array_key_exists("con",$_GET)){
 	//echo a specific page/post
 	echo_index_content($_GET["con"]);
 }else{
-	//echo the blog
+	//set all the vars
+	template_var_add("%title%", qb_setting_get("title"));
+	template_var_add("%tagline%", qb_setting_get("tagline"));
+	template_var_add("%content%", qb_setting_get(""));
+	template_var_add("%offset%", qb_setting_get(""));
+	template_var_add("%aside%", qb_setting_get("aside_content"));
+	template_var_add("%addr%", $addr);
+	if ($current_user === false){
+		template_open_as_var("%members_area%","login_form");
+	}else{
+		template_open_as_var("%members_area%", "members_area");
+	}
+	//echo the blog's home (i.e show the posts)
 	if (qb_post_count() == 0){
-		$_SESSION["message"] = "No posts found";
+		qb_message_add("No posts found.");
+	}else{
+		$echo_offset = false;
+		$offset_next = false;
+		$offset_prev = false;
+		$offset = 0;
+		if (array_key_exists("offset", $_GET)){
+			$offset = intval($_GET["offset"]);
+		}
+		if ($offset > 0){
+			$offset_prev = true;
+		}
+		//echo posts
+		$posts = qb_post_list($offset*20, 20, true);
+		$content = "";
+		//echo them all!
+		$count = count($posts)-1;
+		for ($i = 0; $i < $count; $i++){
+			template_var_add("%heading%",$posts[$i]["heading"]);
+			template_var_add("%content%",$posts[$i]["content"]);
+			$content .= template_open("index_post");
+		}
+		//put content in var
+		template_var_add("%content%", $content);
+		$content = "";//free memory?
+		
+		//check if has to echo the "offset navigator" or whatever it is
+		if (qb_post_count() > ($offset*20) + 20){
+			$offset_next = true;
+			$echo_offset = true;
+		}
+		
+		//check if has to echo the offset-navigator
+		if ($echo_offset){
+			if ($offset_next){
+				template_var_add("%addr_next%", $addr."/index.php?p=".$_GET["p"]."&offset=".strval($offset+1));
+			}else{
+				template_var_add("%addr_next%", $addr."/index.php?p=".$_GET["p"]."&offset=".strval($offset));
+			}
+			if ($offset_prev){
+				template_var_add("%addr_prev%", $addr."/index.php?p=".$_GET["p"]."&offset=".strval($offset-1));
+			}else{
+				template_var_add("%addr_prev%", $addr."/index.php?p=".$_GET["p"]."&offset=".strval($offset));
+			}
+			template_open_var("%offset%", "offset");
+		}else{
+			template_var_add("%offset%", "");
+		}
 	}
-	$off = 0;
-	if (array_key_exists("off",$_GET)){
-		$off = intval($_GET["off"]);
-	}
-	echo_index_posts($off);
+	
+	//finally echo it!
+	template_echo("index");
 }
 
 ?>
