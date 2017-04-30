@@ -49,19 +49,19 @@ if (array_key_exists("p",$_GET)){
 					if ($_POST["type"]=="page"){
 						$r = qb_page_add($_POST["post_heading"],$_POST["post_content"]);
 						if ($r==false){
-							$_SESSION["warning"] = qb_error_get();
+							qb_warning_add(qb_error_get());
 						}else{
-							$_SESSION["message"] = "Page added successfully!";
+							qb_message_add("Page added successfully!");
 						}
 					}else if ($_POST["type"]=="post"){
 						$r = qb_post_add($_POST["post_heading"],$_POST["post_content"]);
 						if ($r==false){
-							$_SESSION["warning"] = qb_error_get();
+							qb_warning_add(qb_error_get());
 						}else{
-							$_SESSION["message"] = "Post added successfully!";
+							qb_message_add("Post added successfully!");
 						}
 					}else{
-						$_SESSION["warning"] = "Failed to add content.";
+						qb_warning_add("Failed to add content.");
 					}
 				}else if ($_GET["a"]=="edit"){
 					if ($id > -1){
@@ -71,9 +71,9 @@ if (array_key_exists("p",$_GET)){
 						//update it
 						$r = qb_content_update($id,$new_content);
 						if ($r==false){
-							$_SESSION["warning"] = qb_error_get();
+							qb_warning_add(qb_error_get());
 						}else{
-							$_SESSION["message"] = "Content updated successfully!";
+							qb_message_add("Content updated successfully!");
 						}
 					}
 				}
@@ -86,9 +86,9 @@ if (array_key_exists("p",$_GET)){
 		if (array_key_exists("a",$_GET) && array_key_exists("id",$_GET)){
 			$r = qb_content_remove(intval($_GET["id"]));
 			if ($r==false){
-				$_SESSION["warning"] = "Failed to remove content<br>".qb_error_get();
+				qb_warning_add("Failed to remove content<br>".qb_error_get());
 			}else{
-				$_SESSION["message"] = "Content removed successfully";
+				qb_message_add("Content removed successfully");
 			}
 		}
 		echo_dashboard_pages();
@@ -97,9 +97,9 @@ if (array_key_exists("p",$_GET)){
 		if (array_key_exists("a",$_GET) && array_key_exists("id",$_GET)){
 			$r = qb_content_remove(intval($_GET["id"]));
 			if ($r==false){
-				$_SESSION["warning"] = "Failed to remove content<br>".qb_error_get();
+				qb_warning_add("Failed to remove content<br>".qb_error_get());
 			}else{
-				$_SESSION["message"] = "Content removed successfully";
+				qb_message_add("Content removed successfully");
 			}
 		}
 		echo_dashboard_posts();
@@ -108,11 +108,11 @@ if (array_key_exists("p",$_GET)){
 		if (array_key_exists("new_title",$_POST) && array_key_exists("new_tagline",$_POST)){
 			//has to update settings
 			if (qb_setting_modify("title",$_POST["new_title"]) == false){
-				$_SESSION["warning"] = "Failed to modify settings<br>".qb_error_get();
+				qb_warning_add("Failed to modify settings<br>".qb_error_get());
 			}else if (qb_setting_modify("tagline",$_POST["new_tagline"]) == false){
-				$_SESSION["warning"] = "Failed to modify settings<br>".qb_error_get();
+				qb_warning_add("Failed to modify settings<br>".qb_error_get());
 			}else{
-				$_SESSION["message"] = "Settings updated successfully";
+				qb_message_add("Settings updated successfully");
 			}
 		}
 		echo_dashboard_settings();
