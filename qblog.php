@@ -7,8 +7,16 @@ $qb_conn = null;
 $qb_debug = false;
 $qb_error = null;
 
+if ($_SERVER["REQUEST_URI"][strlen($_SERVER["REQUEST_URI"])-1] == '/'){
+	$qb_site_addr = "http://".$_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
+	$qb_site_addr = substr($qb_site_addr, 0, strlen($qb_site_addr)-1);
+}else{
+	$qb_site_addr = "http://".$_SERVER["HTTP_HOST"] . dirname($_SERVER["REQUEST_URI"]);
+}
+
 function qb_addr_get(){
-	return "http://".$_SERVER["HTTP_HOST"]/*"http://localhost/qblog"*/;
+	global $qb_site_addr;
+	return $qb_site_addr;
 }
 
 function qb_error_get(){
@@ -31,6 +39,40 @@ function qb_debug_set($onOff){
 function qb_debug_get(){
 	global $qb_debug;
 	return $qb_debug;
+}
+
+function qb_message_add($msg){
+	if (array_key_exists("message", $_SESSION)){
+		$_SESSION["message"] .= [$msg];
+	}else{
+		$_SESSION["message"] = array($msg);
+	}
+}
+
+function qb_warning_add($msg){
+	if (array_key_exists("warning", $_SESSION)){
+		$_SESSION["warning"] .= [$msg];
+	}else{
+		$_SESSION["warning"] = array($msg);
+	}
+}
+
+function qb_message_get(){
+	if (array_key_exists("message", $_SESSION)){
+		$r = $_SESSION["message"];
+		unset($_SESSION["message"]);
+	}else{
+		return false;
+	}
+}
+
+function qb_warning_get(){
+	if (array_key_exists("warning", $_SESSION)){
+		$r = $_SESSION["warning"];
+		unset($_SESSION["warning"]);
+	}else{
+		return false;
+	}
 }
 
 function qb_conn_get(){
@@ -203,7 +245,7 @@ function qb_login_verify($username, $password){
 		if (password_verify($password, $hash)){
 			return $row["id"];
 		}else{
-			return 0;
+			return false;
 		}
 	}
 	return 0;
