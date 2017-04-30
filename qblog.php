@@ -43,7 +43,7 @@ function qb_debug_get(){
 
 function qb_message_add($msg){
 	if (array_key_exists("message", $_SESSION)){
-		$_SESSION["message"] .= [$msg];
+		array_push($_SESSION["message"], $msg);
 	}else{
 		$_SESSION["message"] = array($msg);
 	}
@@ -51,7 +51,7 @@ function qb_message_add($msg){
 
 function qb_warning_add($msg){
 	if (array_key_exists("warning", $_SESSION)){
-		$_SESSION["warning"] .= [$msg];
+		array_push($_SESSION["warning"], $msg);
 	}else{
 		$_SESSION["warning"] = array($msg);
 	}
@@ -61,6 +61,7 @@ function qb_message_get(){
 	if (array_key_exists("message", $_SESSION)){
 		$r = $_SESSION["message"];
 		unset($_SESSION["message"]);
+		return $r;
 	}else{
 		return false;
 	}
@@ -70,6 +71,7 @@ function qb_warning_get(){
 	if (array_key_exists("warning", $_SESSION)){
 		$r = $_SESSION["warning"];
 		unset($_SESSION["warning"]);
+		return $r;
 	}else{
 		return false;
 	}
