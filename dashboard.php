@@ -231,7 +231,7 @@ if ($echo_offset){
 	}else{
 		template_var_add("%addr_prev%", $addr."/index.php?p=".$_GET["p"]."&offset=".strval($offset));
 	}
-	template_open_var("%offset%", "index_offset");
+	template_open_var("%offset%", "dashboard_offset");
 }else{
 	template_var_add("%offset%", "");
 }
