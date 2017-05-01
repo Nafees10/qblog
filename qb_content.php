@@ -61,12 +61,16 @@ function qb_content_update($pid, $content){
 	$pid_str = qb_str_process(strval($pid));
 	$content["content"] = qb_str_process($content["content"]);
 	$content["heading"] = qb_str_process(strip_tags($content["heading"]));
+	$content["type"] = qb_str_process($content["type"]);
+	if ($content["type"]  != "post" && $content["type"] != "page"){
+		$content["type"] = "post";
+	}
 	//update heading & content
 	
 	$user = qb_user_get($_SESSION["uid"]);
 	if ($user["type"]=="admin" || $user["type"]=="editor"){
 		$query = "UPDATE content SET heading='".$content["heading"].
-			"', content='".$content["content"]."' WHERE id=".$pid_str;
+			"', content='".$content["content"]."', type='".$content["type"]."' WHERE id=".$pid_str;
 		if ($conn->query($query)==false){
 			$error = "Failed to edit content";
 			if (qb_debug_get()){

@@ -89,6 +89,7 @@ if (array_key_exists("p",$_GET)){
 						$new_content = array();
 						$new_content["heading"] = $_POST["post_heading"];
 						$new_content["content"] = $_POST["post_content"];
+						$new_content["type"] = $_POST["type"];
 						//update it
 						$r = qb_content_update($id,$new_content);
 						if ($r==false){
