@@ -127,7 +127,7 @@ if (array_key_exists("con",$_GET)){
 				$_GET["offset"] = $offset;
 				template_var_add("%addr_prev%", $addr."/dashboard.php?".http_build_query($_GET));
 			}
-			template_open_as_var("%offset%", "dashboard_offset");
+			template_open_as_var("%offset%", "index_offset");
 		}else{
 			template_var_add("%offset%", "");
 		}
