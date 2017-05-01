@@ -114,16 +114,20 @@ if (array_key_exists("con",$_GET)){
 		//check if has to echo the offset-navigator
 		if ($echo_offset){
 			if ($offset_next){
-				template_var_add("%addr_next%", $addr."/index.php?offset=".strval($offset+1));
+				$_GET["offset"] = $offset+1;
+				template_var_add("%addr_next%", $addr."/dashboard.php?".http_build_query($_GET));
 			}else{
-				template_var_add("%addr_next%", $addr."/index.php?offset=".strval($offset));
+				$_GET["offset"] = $offset;
+				template_var_add("%addr_next%", $addr."/dashboard.php?".http_build_query($_GET));
 			}
 			if ($offset_prev){
-				template_var_add("%addr_prev%", $addr."/index.php?offset=".strval($offset-1));
+				$_GET["offset"] = $offset-1;
+				template_var_add("%addr_prev%", $addr."/dashboard.php?".http_build_query($_GET));
 			}else{
-				template_var_add("%addr_prev%", $addr."/index.php?offset=".strval($offset));
+				$_GET["offset"] = $offset;
+				template_var_add("%addr_prev%", $addr."/dashboard.php?".http_build_query($_GET));
 			}
-			template_open_as_var("%offset%", "index_offset");
+			template_open_as_var("%offset%", "dashboard_offset");
 		}else{
 			template_var_add("%offset%", "");
 		}

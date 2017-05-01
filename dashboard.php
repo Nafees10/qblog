@@ -15,7 +15,7 @@ if (array_key_exists("uid",$_SESSION)==false){
 $current_user = qb_user_get($_SESSION["uid"]);
 if ($current_user == false){
 	header("Location: ".$addr);
-	$_SESSION["message"] = 'Your login was invalid. You\'ve been logged out.';
+	$_SESSION["message"] = 'Your login was invalid. You have been logged out.';
 	unset($_SESSION["uid"]);
 	die ("Your login was invalid. Redirecting...");
 }
@@ -228,14 +228,18 @@ if (array_key_exists("p",$_GET)){
 //offset nav
 if ($echo_offset){
 	if ($offset_next){
-		template_var_add("%addr_next%", $addr."/dashboard.php?p=".$_GET["p"]."&offset=".strval($offset+1));
+		$_GET["offset"] = $offset+1;
+		template_var_add("%addr_next%", $addr."/dashboard.php?".http_build_query($_GET));
 	}else{
-		template_var_add("%addr_next%", $addr."/dashboard.php?p=".$_GET["p"]."&offset=".strval($offset));
+		$_GET["offset"] = $offset;
+		template_var_add("%addr_next%", $addr."/dashboard.php?".http_build_query($_GET));
 	}
 	if ($offset_prev){
-		template_var_add("%addr_prev%", $addr."/dashboard.php?p=".$_GET["p"]."&offset=".strval($offset-1));
+		$_GET["offset"] = $offset-1;
+		template_var_add("%addr_prev%", $addr."/dashboard.php?".http_build_query($_GET));
 	}else{
-		template_var_add("%addr_prev%", $addr."/dashboard.php?p=".$_GET["p"]."&offset=".strval($offset));
+		$_GET["offset"] = $offset;
+		template_var_add("%addr_prev%", $addr."/dashboard.php?".http_build_query($_GET));
 	}
 	template_open_as_var("%offset%", "dashboard_offset");
 }else{
