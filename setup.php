@@ -54,12 +54,12 @@ if (array_key_exists("title",$_POST)){
 		}
 		//if the execution reached here, it's error free
 		header("Location: ".qb_addr_get());
-		$_SESSION["message"] = 'QBlog was set up.<br>'.
-			'For security reasons, delete the <code>setup.php</code> file.';
+		qb_message_add('QBlog was set up.<br>'.
+			'For security reasons, delete the setup.php file.');
 		die ("QBlog was set up! Redirecting to main page");
 	}else{
 		//there's error!
-		$_SESSION["warning"] = $error;
+		qb_warning_add($error);
 		//echo $error;
 	}
 }
