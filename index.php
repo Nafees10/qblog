@@ -91,7 +91,7 @@ if (array_key_exists("con",$_GET)){
 			$echo_offset = true;
 		}
 		//echo posts
-		$posts = qb_post_list($offset*20, 20, true);
+		$posts = qb_post_list($offset*10, 10, true);
 		$content = "";
 		//echo them all!
 		$count = count($posts)-1;
@@ -106,7 +106,7 @@ if (array_key_exists("con",$_GET)){
 		$content = "";//free memory?
 		
 		//check if has to echo the "offset navigator" or whatever it is
-		if (qb_post_count() > ($offset*20) + 20){
+		if (qb_post_count() > ($offset*10) + 10){
 			$offset_next = true;
 			$echo_offset = true;
 		}

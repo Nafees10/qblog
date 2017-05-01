@@ -127,7 +127,7 @@ if (array_key_exists("p",$_GET)){
 			}
 		}
 		//echo em
-		$pages = qb_page_list($offset*20, 20);
+		$pages = qb_page_list($offset*10, 10);
 		$count = count($pages)-1;
 		$table = "";
 		for ($i = 0; $i < $count; $i ++){
@@ -138,7 +138,7 @@ if (array_key_exists("p",$_GET)){
 		template_var_add("%pages%", $table);
 		template_open_as_var("%content%", "dashboard_pages");
 		//now for the offset nav...
-		if (qb_page_count() > ($offset*20) + 20){
+		if (qb_page_count() > ($offset*10) + 10){
 			$offset_next = true;
 			$echo_offset = true;
 		}else if ($offset_prev){
@@ -155,7 +155,7 @@ if (array_key_exists("p",$_GET)){
 			}
 		}
 		//echo em
-		$posts = qb_post_list($offset*20, 20);
+		$posts = qb_post_list($offset*10, 10);
 		$count = count($posts)-1;
 		$table = "";
 		for ($i = 0; $i < $count; $i ++){
@@ -166,7 +166,7 @@ if (array_key_exists("p",$_GET)){
 		template_var_add("%posts%", $table);
 		template_open_as_var("%content%", "dashboard_posts");
 		//now for the offset nav...
-		if (qb_post_count() > ($offset*20) + 20){
+		if (qb_post_count() > ($offset*10) + 10){
 			$offset_next = true;
 			$echo_offset = true;
 		}else if ($offset_prev){
@@ -207,7 +207,7 @@ if (array_key_exists("p",$_GET)){
 			}
 		}
 		//echo em
-		$posts = qb_post_list($offset*20, 20);
+		$posts = qb_post_list($offset*10, 10);
 		$count = count($posts)-1;
 		$table = "";
 		for ($i = 0; $i < $count; $i ++){
@@ -218,7 +218,7 @@ if (array_key_exists("p",$_GET)){
 		template_var_add("%posts%", $table);
 		template_open_as_var("%content%", "dashboard_posts");
 		//now for the offset nav...
-		if (qb_post_count() > ($offset*20) + 20){
+		if (qb_post_count() > ($offset*10) + 10){
 			$offset_next = true;
 			$echo_offset = true;
 		}else if ($offset_prev){
