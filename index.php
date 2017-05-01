@@ -88,6 +88,7 @@ if (array_key_exists("con",$_GET)){
 		}
 		if ($offset > 0){
 			$offset_prev = true;
+			$echo_offset = true;
 		}
 		//echo posts
 		$posts = qb_post_list($offset*20, 20, true);
