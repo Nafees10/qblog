@@ -11,7 +11,7 @@ function qb_page_get($pid){
 	if ($res){
 		if ($res->num_rows>0){
 			$r = $res->fetch_assoc();
-			$r["content"] = nl2br($r["content"]);
+			$r["content"] = ($r["content"]);
 			return $r;
 		}else{
 			qb_error_set("Page not found");

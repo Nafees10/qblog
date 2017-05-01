@@ -11,7 +11,7 @@ function qb_content_get($pid, $nl_to_br=false){
 		if ($res->num_rows>0){
 			if ($nl_to_br){
 				$r = $res->fetch_assoc();
-				$r["content"] = nl2br($r["content"]);
+				$r["content"] = ($r["content"]);
 				return $r;
 			}else{
 				return $res->fetch_assoc();

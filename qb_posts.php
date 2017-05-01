@@ -11,7 +11,7 @@ function qb_post_get($pid){
 	if ($res){
 		if ($res->num_rows>0){
 			$r = $res->fetch_assoc();
-			$r["content"] = nl2br($r["content"]);
+			$r["content"] = ($r["content"]);
 			return $r;
 		}else{
 			qb_error_set("Post not found");
@@ -66,7 +66,7 @@ function qb_post_list($offset, $count, $content=false){
 		$r = array_fill(0,$res->num_rows, null);
 		while ($r[$i] = $res->fetch_assoc()){
 			if ($content){
-				$r[$i]["content"] = nl2br($r[$i]["content"]);
+				$r[$i]["content"] = ($r[$i]["content"]);
 			}
 			$i++;
 		}
@@ -89,7 +89,7 @@ function qb_post_list_all($content=false){
 		$r = array_fill(0,$res->num_rows, null);
 		while ($r[$i] = $res->fetch_assoc()){
 			if ($content){
-				$r[$i]["content"] = nl2br($r[$i]["content"]);
+				$r[$i]["content"] = ($r[$i]["content"]);
 			}
 			$i++;
 		}
