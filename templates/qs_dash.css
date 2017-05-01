@@ -259,7 +259,7 @@ a.blockBtn:link, a.blockBtn:visited, a.blockBtn:hover, a.blockBtn:active{
 /*</>*/
 
 .btn{
-	background-color: #000000;
+	background-color: #4CAF50;
 	color: #ffffff;
 	border: none;
 	height: auto;
@@ -272,11 +272,11 @@ a.blockBtn:link, a.blockBtn:visited, a.blockBtn:hover, a.blockBtn:active{
 }
 
 .btn:hover{
-	background-color: #4d4d4d;
+	background-color: #95d097;
 }
 
 .blockBtn{
-	background-color: #000000;
+	background-color: #4CAF50;
 	color: #ffffff;
 	border: none;
 	height: auto;
@@ -290,7 +290,7 @@ a.blockBtn:link, a.blockBtn:visited, a.blockBtn:hover, a.blockBtn:active{
 }
 
 .blockBtn:hover{
-	background-color: #4d4d4d;
+	background-color: #95d097;
 }
 
 hr{
