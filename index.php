@@ -114,16 +114,16 @@ if (array_key_exists("con",$_GET)){
 		//check if has to echo the offset-navigator
 		if ($echo_offset){
 			if ($offset_next){
-				template_var_add("%addr_next%", $addr."/index.php?p=".$_GET["p"]."&offset=".strval($offset+1));
+				template_var_add("%addr_next%", $addr."/index.php?offset=".strval($offset+1));
 			}else{
-				template_var_add("%addr_next%", $addr."/index.php?p=".$_GET["p"]."&offset=".strval($offset));
+				template_var_add("%addr_next%", $addr."/index.php?offset=".strval($offset));
 			}
 			if ($offset_prev){
-				template_var_add("%addr_prev%", $addr."/index.php?p=".$_GET["p"]."&offset=".strval($offset-1));
+				template_var_add("%addr_prev%", $addr."/index.php?offset=".strval($offset-1));
 			}else{
-				template_var_add("%addr_prev%", $addr."/index.php?p=".$_GET["p"]."&offset=".strval($offset));
+				template_var_add("%addr_prev%", $addr."/index.php?offset=".strval($offset));
 			}
-			template_open_var("%offset%", "index_offset");
+			template_open_as_var("%offset%", "index_offset");
 		}else{
 			template_var_add("%offset%", "");
 		}
