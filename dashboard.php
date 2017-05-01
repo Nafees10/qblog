@@ -141,6 +141,8 @@ if (array_key_exists("p",$_GET)){
 		if (qb_page_count() > ($offset*20) + 20){
 			$offset_next = true;
 			$echo_offset = true;
+		}else if ($offset_prev){
+			$echo_offset = true;
 		}
 	}else if ($_GET["p"]=="posts"){
 		//check if has to delete
@@ -164,8 +166,10 @@ if (array_key_exists("p",$_GET)){
 		template_var_add("%posts%", $table);
 		template_open_as_var("%content%", "dashboard_posts");
 		//now for the offset nav...
-		if (qb_page_count() > ($offset*20) + 20){
+		if (qb_post_count() > ($offset*20) + 20){
 			$offset_next = true;
+			$echo_offset = true;
+		}else if ($offset_prev){
 			$echo_offset = true;
 		}
 	}else if ($_GET["p"]=="settings"){
@@ -214,24 +218,26 @@ if (array_key_exists("p",$_GET)){
 		template_var_add("%posts%", $table);
 		template_open_as_var("%content%", "dashboard_posts");
 		//now for the offset nav...
-		if (qb_page_count() > ($offset*20) + 20){
+		if (qb_post_count() > ($offset*20) + 20){
 			$offset_next = true;
+			$echo_offset = true;
+		}else if ($offset_prev){
 			$echo_offset = true;
 		}
 }
 //offset nav
 if ($echo_offset){
 	if ($offset_next){
-		template_var_add("%addr_next%", $addr."/index.php?p=".$_GET["p"]."&offset=".strval($offset+1));
+		template_var_add("%addr_next%", $addr."/dashboard.php?p=".$_GET["p"]."&offset=".strval($offset+1));
 	}else{
-		template_var_add("%addr_next%", $addr."/index.php?p=".$_GET["p"]."&offset=".strval($offset));
+		template_var_add("%addr_next%", $addr."/dashboard.php?p=".$_GET["p"]."&offset=".strval($offset));
 	}
 	if ($offset_prev){
-		template_var_add("%addr_prev%", $addr."/index.php?p=".$_GET["p"]."&offset=".strval($offset-1));
+		template_var_add("%addr_prev%", $addr."/dashboard.php?p=".$_GET["p"]."&offset=".strval($offset-1));
 	}else{
-		template_var_add("%addr_prev%", $addr."/index.php?p=".$_GET["p"]."&offset=".strval($offset));
+		template_var_add("%addr_prev%", $addr."/dashboard.php?p=".$_GET["p"]."&offset=".strval($offset));
 	}
-	template_open_var("%offset%", "dashboard_offset");
+	template_open_as_var("%offset%", "dashboard_offset");
 }else{
 	template_var_add("%offset%", "");
 }
