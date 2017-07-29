@@ -1,6 +1,7 @@
 <?php
 include_once("qblog.php");
 include_once("qb_users.php");
+include_once("qb_content.php");
 include_once("qb_templates.php");
 qb_connect();
 session_start();
@@ -61,14 +62,14 @@ if (array_key_exists("p",$_GET)){
 		if (array_key_exists("a",$_GET) && ($_GET["a"] == "new" || $_GET["a"] == "edit")){
 			//check if it was a form submission
 			if (array_key_exists("post_heading",$_POST) && array_key_exists("post_content",$_POST) && array_key_exists("post_type",$_POST)){
-				$content = new Content;
+				$content = new Content();
 				//edit/post it
 				if ($_GET["a"]=="new"){
 					$content->heading = $_POST["post_heading"];
 					$content->content = $_POST["post_content"];
 					$content->type = $_POST["post_type"];
 					// insert, and check if successful
-					if ($content::insert()){
+					if ($content->insert()){
 						qb_message_add("Content added successfully!");
 					}else{
 						qb_warning_add(qb_error_get());
@@ -78,7 +79,7 @@ if (array_key_exists("p",$_GET)){
 						$content->heading = $_POST["post_heading"];
 						$content->content = $_POST["post_content"];
 						$content->type = $_POST["type"];
-						if ($content::update()){
+						if ($content->update()){
 							qb_message_add("Content updated successfully!");
 						}else{
 							qb_warning_add(qb_error_get());
@@ -123,6 +124,7 @@ if (array_key_exists("p",$_GET)){
 		for ($i = 0; $i < $count; $i ++){
 			template_var_add("%id%", $contents[$i]->id);
 			template_var_add("%heading%", $contents[$i]->heading);
+			unset($contents[$i]);
 			$table .= template_open("dashboard_".$type);
 		}
 		template_var_add("%".$type."s%", $table);
@@ -166,6 +168,7 @@ if (array_key_exists("p",$_GET)){
 	for ($i = 0; $i < $count; $i ++){
 		template_var_add("%id%", $posts[$i]->id);
 		template_var_add("%heading%", $posts[$i]->heading);
+		unset($posts[$i]);
 		$table .= template_open("dashboard_post");
 	}
 	template_var_add("%posts%", $table);
