@@ -2,26 +2,130 @@
 include_once("qblog.php");//base of qblog
 include_once("qb_users.php");//used by add_post
 
-function qb_content_get($pid, $nl_to_br=false){
-	$conn = qb_conn_get();
+class Content{
+	private $content_id, $content_heading, $content_content, $content_type;
+	private $modified = false;
+	private $modified_id = false;
 	
-	$query = "SELECT heading, content, type FROM content WHERE id=".qb_str_process(strval($pid));
-	$res = $conn->query($query);
-	if ($res){
-		if ($res->num_rows>0){
-			if ($nl_to_br){
-				$r = $res->fetch_assoc();
-				$r["content"] = ($r["content"]);
-				return $r;
+	/// loads a content from database using the id
+	/// $id is the id of the content
+	/// returns true on success, false on error
+	public function load($id){
+		$conn = qb_conn_get();
+		
+		$query = "SELECT heading, content, type FROM content WHERE id=".qb_str_process(strval($id));
+		$res = $conn->query($query);
+		
+		$modified = false;
+		if ($res){
+			if ($res->num_rows>0){
+				$c = $res->fetch_assoc;
+				$content_id = $id;
+				$content_heading = $c["heading"];
+				$content_content = $c["content"];
+				$content_type = $c["type"];
 			}else{
-				return $res->fetch_assoc();
+				qb_error_set("Content not found");
+				return false;
 			}
-		}else{
-			qb_error_set("Content not found");
-			return false;
+		}
+		return true;
+	}
+	
+	/// updates the content in database, which has the id same as this one, with this one's content, heading, & type
+	/// this will fail if none of the variables were changed.
+	/// returns true on success & false on error
+	public function update(){
+		if ($modified){
+			$heading = qb_str_process($content_heading);
+			$content = qb_str_process($content_content);
+			$type = qb_str_process($content_type);
+			$id = qb_str_process(strval($content_id));
+			$query = "UPDATE content SET heading='".$heading."', content='".$content."', type='".$type."' WHERE id=".$id;
+			
+			if ($conn->query($query)==false){
+				$error = "Failed to edit content";
+				if (qb_debug_get()){
+					$error .= "; \n".$conn->error;
+				}
+				qb_error_set($error);
+				return false;
+			}else{
+				return true;
+			}
 		}
 	}
-	return true;
+	
+	/// inserts this Content to the database, and changes the id to the id in the database
+	/// the id set before inserting is not considered
+	/// returns true if sucessful, false if not
+	public function insert(){
+		$conn = qb_conn_get();
+		$heading = qb_str_process($content_heading);
+		$content = qb_str_process($content_content);
+		$type = qb_str_process($content_type);
+		$query = "INSERT INTO content(heading, content, type) VALUES('".$heading."','".$content."','".$type."')";
+		
+		if ($conn->query($query)==false){
+			$error = "Failed to add content";
+			if (qb_debug_get()){
+				$error .= "; \n".$conn->error;
+			}
+			qb_error_set($error);
+			return false;
+		}else{
+			return true;
+		}
+	}
+	
+	/// removes a content from database using the id
+	public static function remove($id){
+		$query = "DELETE FROM content WHERE id=".qb_str_process(strval($pid));
+		if (!$conn->query($query)){
+			$error = "Failed to remove content";
+			if (qb_debug_get()){
+				$error .= "; \n".$conn->error;
+			}
+			qb_error_set($error);
+			return false;
+		}else{
+			return true;
+		}
+	}
+	
+	public function __set($var, $val){
+		$modified = true;
+		if ($var == "id"){
+			$modified_id = true;
+			$content_id = $val;
+		}else if ($var == "heading"){
+			$content_heading = $val;
+		}else if ($var == "content"){
+			$content_content = $val;
+		}else if ($var == "type"){
+			$content_type = $val;
+			// make sure val is either post or page
+			if ($content_type != "post" && $content_type != "page"){
+				$content_type = "post";
+			}
+		}else{
+			die('variable "'.$var.'" does not exist');
+		}
+	}
+	
+	public function __get($var){
+		if ($var == "id"){
+			return $content_id;
+		}else if ($var == "heading"){
+			return $content_heading;
+		}else if ($var == "content"){
+			return $content_content;
+		}else if ($var == "type"){
+			return $content_type;
+		}else{
+			die('variable "'.$var.'" does not exist');
+		}
+	}
 }
 
 function qb_content_list($offset, $count){
@@ -68,7 +172,7 @@ function qb_content_update($pid, $content){
 	//update heading & content
 	
 	$user = qb_user_get($_SESSION["uid"]);
-	if ($user["type"]=="admin" || $user["type"]=="editor"){
+	if ($user["type"]=="admin"){
 		$query = "UPDATE content SET heading='".$content["heading"].
 			"', content='".$content["content"]."', type='".$content["type"]."' WHERE id=".$pid_str;
 		if ($conn->query($query)==false){
