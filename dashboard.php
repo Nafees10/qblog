@@ -61,17 +61,17 @@ if (array_key_exists("p",$_GET)){
 		if (array_key_exists("a",$_GET) && ($_GET["a"] == "new" || $_GET["a"] == "edit")){
 			//check if it was a form submission
 			if (array_key_exists("post_heading",$_POST) && array_key_exists("post_content",$_POST) && array_key_exists("post_type",$_POST)){
-				$content = new Content();
+				$content = new Content;
 				//edit/post it
 				if ($_GET["a"]=="new"){
 					$content->heading = $_POST["post_heading"];
 					$content->content = $_POST["post_content"];
 					$content->type = $_POST["post_type"];
 					// insert, and check if successful
-					if ($content::insert() === false){
-						qb_warning_add(qb_error_get());
-					}else{
+					if ($content::insert() == false){
 						qb_message_add("Content added successfully!");
+					}else{
+						qb_warning_add(qb_error_get());
 					}
 				}else if ($_GET["a"]=="edit"){
 					if ($id > -1){
@@ -94,9 +94,10 @@ if (array_key_exists("p",$_GET)){
 				}
 				unset($content);
 			}
+			template_var_add("%action%", "edit");
 		}else{
 			template_var_add("%post_checked%", " checked");
-			template_var_add("%action%", "edit");
+			template_var_add("%action%", "new");
 			template_var_add("%heading%", "");
 			template_var_add("%content%", "");
 		}
