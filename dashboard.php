@@ -55,7 +55,10 @@ if (array_key_exists("p",$_GET)){
 		template_var_add("%post_checked%", " ");
 		template_var_add("%page_checked%", " ");
 		
-		if (array_key_exists("a",$_GET)){
+		template_var_add("%heading%", "");
+		template_var_add("%content%", "");
+		
+		if (array_key_exists("a",$_GET) && ($_GET["a"] == "new" || $_GET["a"] == "edit")){
 			//check if it was a form submission
 			if (array_key_exists("post_heading",$_POST) && array_key_exists("post_content",$_POST) && array_key_exists("post_type",$_POST)){
 				$content = new Content();
@@ -82,9 +85,13 @@ if (array_key_exists("p",$_GET)){
 						}
 					}
 				}
-				template_var_add("%action%", "edit");
 				template_var_add("%heading%", $content->heading);
 				template_var_add("%content%", $content->content);
+				if ($content->type == "post"){
+					template_var_add("%post_checked%", " checked");
+				}else{
+					template_var_add("%page_checked%", " checked");
+				}
 				unset($content);
 			}
 		}else{

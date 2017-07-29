@@ -17,10 +17,10 @@ class Content{
 		if ($res){
 			if ($res->num_rows>0){
 				$c = $res->fetch_assoc;
-				$content_id = $id;
-				$content_heading = $c["heading"];
-				$content_content = $c["content"];
-				$content_type = $c["type"];
+				$this->content_id = $id;
+				$this->content_heading = $c["heading"];
+				$this->content_content = $c["content"];
+				$this->content_type = $c["type"];
 			}else{
 				qb_error_set("Content not found");
 				return false;
@@ -33,9 +33,9 @@ class Content{
 	/// this will fail if none of the variables were changed.
 	/// returns true on success & false on error
 	public function update(){
-		$heading = qb_str_process($content_heading);
-		$content = qb_str_process($content_content);
-		$type = qb_str_process($content_type);
+		$heading = qb_str_process($this->content_heading);
+		$content = qb_str_process($this->content_content);
+		$type = qb_str_process($this->content_type);
 		$id = qb_str_process(strval($content_id));
 		$query = "UPDATE content SET heading='".$heading."', content='".$content."', type='".$type."' WHERE id=".$id;
 		
@@ -56,9 +56,9 @@ class Content{
 	/// returns true if sucessful, false if not
 	public function insert(){
 		$conn = qb_conn_get();
-		$heading = qb_str_process($content_heading);
-		$content = qb_str_process($content_content);
-		$type = qb_str_process($content_type);
+		$heading = qb_str_process($this->content_heading);
+		$content = qb_str_process($this->content_content);
+		$type = qb_str_process($this->content_type);
 		$query = "INSERT INTO content(heading, content, type) VALUES('".$heading."','".$content."','".$type."')";
 		
 		if ($conn->query($query)==false){
@@ -77,7 +77,7 @@ class Content{
 	/// returns true on success, false if not
 	public static function remove($id){
 		$conn = qb_conn_get();
-		$query = "DELETE FROM content WHERE id=".qb_str_process(strval($pid));
+		$query = "DELETE FROM content WHERE id=".qb_str_process(strval($id));
 		if (!$conn->query($query)){
 			$error = "Failed to remove content";
 			if (qb_debug_get()){
@@ -148,16 +148,16 @@ class Content{
 	
 	public function __set($var, $val){
 		if ($var == "id"){
-			$content_id = $val;
+			$this->content_id = $val;
 		}else if ($var == "heading"){
-			$content_heading = $val;
+			$this->content_heading = $val;
 		}else if ($var == "content"){
-			$content_content = $val;
+			$this->content_content = $val;
 		}else if ($var == "type"){
-			$content_type = $val;
+			$this->content_type = $val;
 			// make sure val is either post or page
-			if ($content_type != "post" && $content_type != "page"){
-				$content_type = "post";
+			if ($this->content_type != "post" && $this->content_type != "page"){
+				$this->content_type = "post";
 			}
 		}else{
 			die('variable "'.$var.'" does not exist');
@@ -166,13 +166,13 @@ class Content{
 	
 	public function __get($var){
 		if ($var == "id"){
-			return $content_id;
+			return $this->content_id;
 		}else if ($var == "heading"){
-			return $content_heading;
+			return $this->content_heading;
 		}else if ($var == "content"){
-			return $content_content;
+			return $this->content_content;
 		}else if ($var == "type"){
-			return $content_type;
+			return $this->content_type;
 		}else{
 			die('variable "'.$var.'" does not exist');
 		}
