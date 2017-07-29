@@ -1,7 +1,5 @@
 <?php
 include_once("qblog.php");
-include_once("qb_posts.php");
-include_once("qb_pages.php");
 include_once("qb_users.php");
 include_once("qb_templates.php");
 qb_connect();
