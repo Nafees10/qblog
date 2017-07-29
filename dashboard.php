@@ -20,7 +20,7 @@ if ($current_user == false){
 if ($current_user["type"]!="admin"){
 	header("Location: ".$addr);
 	$_SESSION["message"] = 'Your account cannot access dashboard.';
-	die ("Only admins can access post editor.");
+	die ("Only admins can access dashboard.");
 }
 /*$_GET arguments:
  * p - to specify what to open, post 'editor', 'pages'_list, 'posts'_list, or 'settings'
@@ -57,63 +57,43 @@ if (array_key_exists("p",$_GET)){
 		
 		if (array_key_exists("a",$_GET)){
 			//check if it was a form submission
-			if (array_key_exists("post_heading",$_POST) && 
-			array_key_exists("post_content",$_POST) && array_key_exists("type",$_POST)){
+			if (array_key_exists("post_heading",$_POST) && array_key_exists("post_content",$_POST) && array_key_exists("post_type",$_POST)){
+				$content = new Content();
 				//edit/post it
 				if ($_GET["a"]=="new"){
-					if ($_POST["type"]=="page"){
-						$r = qb_page_add($_POST["post_heading"],$_POST["post_content"]);
-						if ($r==false){
-							qb_warning_add(qb_error_get());
-						}else{
-							qb_message_add("Page added successfully!");
-						}
-						//mark page as checked
-						template_var_add("%page_checked%", " checked");
-					}else if ($_POST["type"]=="post"){
-						$r = qb_post_add($_POST["post_heading"],$_POST["post_content"]);
-						if ($r==false){
-							qb_warning_add(qb_error_get());
-						}else{
-							qb_message_add("Post added successfully!");
-						}
-						//mark post as checked
-						template_var_add("%post_checked%", " checked");
+					$conent->heading = $_POST["post_heading"];
+					$content->content = $_POST["post_content"];
+					$content->type = $_POST["post_type"];
+					// insert, and check if successful
+					if ($content::insert() === false){
+						qb_warning_add(qb_error_get());
 					}else{
-						qb_warning_add("Failed to add content.");
+						qb_message_add("Content added successfully!");
 					}
+					template_var_add("%action%", "new");
+					template_var_add("%heading%", "");
+					template_var_add("%content%", "");
 				}else if ($_GET["a"]=="edit"){
 					if ($id > -1){
-						$new_content = array();
-						$new_content["heading"] = $_POST["post_heading"];
-						$new_content["content"] = $_POST["post_content"];
-						$new_content["type"] = $_POST["type"];
-						//update it
-						$r = qb_content_update($id,$new_content);
-						if ($r==false){
-							qb_warning_add(qb_error_get());
-						}else{
+						$content->heading = $_POST["post_heading"];
+						$content->content = $_POST["post_content"];
+						$content->type = $_POST["type"];
+						if ($content::update()){
 							qb_message_add("Content updated successfully!");
+						}else{
+							qb_warning_add(qb_error_get());
 						}
+						template_var_add("%action%", "edit");
+						template_var_add("%heading%", $content->heading);
+						template_var_add("%content%", $content->content);
 					}
 				}
+				unset($content);
 			}
 		}else{
 			template_var_add("%post_checked%", " checked");
 		}
-		//echo the post/content editor
-		//check if there was content, if yes, show that
 		template_var_add("%id%", $id);
-		if ($id >= 0){
-			$con = qb_content_get($id);
-			template_var_add("%action%", "edit");
-			template_var_add("%heading%", $con["heading"]);
-			template_var_add("%content%", $con["content"]);
-		}else{
-			template_var_add("%action%", "new");
-			template_var_add("%heading%", "");
-			template_var_add("%content%", "");
-		}
 		template_open_as_var("%content%", "dashboard_editor");
 	}else if ($_GET["p"]=="pages"){
 		//check if has to delete
