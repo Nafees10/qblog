@@ -68,7 +68,7 @@ if (array_key_exists("p",$_GET)){
 					$content->content = $_POST["post_content"];
 					$content->type = $_POST["post_type"];
 					// insert, and check if successful
-					if ($content::insert() == false){
+					if ($content::insert()){
 						qb_message_add("Content added successfully!");
 					}else{
 						qb_warning_add(qb_error_get());
