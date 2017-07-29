@@ -63,6 +63,7 @@ $count = count($pages)-1;
 for ($i = 0; $i < $count; $i ++){
 	template_var_add("%heading%", $pages[$i]->heading);
 	template_var_add("%id%", $pages[$i]->id);
+	unset($pages[$i]);
 	$nav .= template_open("index_nav_page");
 }
 template_var_add("%nav_pages%", $nav);
@@ -70,7 +71,7 @@ template_var_add("%nav_pages%", $nav);
 if (array_key_exists("con",$_GET)){
 	//echo a specific page/post
 	$con = new Content();
-	$con::load(intval($_GET["con"]));
+	$con->load(intval($_GET["con"]));
 	template_var_add("%content%", $con->content);
 	template_var_add("%heading%", $con->heading);
 	unset($con);
@@ -101,6 +102,7 @@ if (array_key_exists("con",$_GET)){
 			template_var_add("%heading%",$posts[$i]->heading);
 			template_var_add("%content%",$posts[$i]->content);
 			template_var_add("%id%", $posts[$i]->id);
+			unset($posts[$i]);
 			$content .= template_open("index_post");
 		}
 		//put content in var
