@@ -97,7 +97,7 @@ if (array_key_exists("p",$_GET)){
 		template_open_as_var("%content%", "dashboard_editor");
 	}else if ($_GET["p"]=="pages"){
 		//check if has to delete
-		if (array_key_exists("a",$_GET) && array_key_exists("id",$_GET)){
+		if (array_key_exists("a",$_GET) && $_GET["a"] == "delete" && array_key_exists("id",$_GET)){
 			$r = qb_content_remove(intval($_GET["id"]));
 			if ($r==false){
 				qb_warning_add("Failed to remove content<br>".qb_error_get());
@@ -125,7 +125,7 @@ if (array_key_exists("p",$_GET)){
 		}
 	}else if ($_GET["p"]=="posts"){
 		//check if has to delete
-		if (array_key_exists("a",$_GET) && array_key_exists("id",$_GET)){
+		if (array_key_exists("a",$_GET) && $_GET["a"] == "delete" && array_key_exists("id",$_GET)){
 			$r = qb_content_remove(intval($_GET["id"]));
 			if ($r==false){
 				qb_warning_add("Failed to remove content<br>".qb_error_get());
