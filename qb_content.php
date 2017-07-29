@@ -80,6 +80,7 @@ class Content{
 	
 	/// removes a content from database using the id
 	public static function remove($id){
+		$conn = qb_conn_get();
 		$query = "DELETE FROM content WHERE id=".qb_str_process(strval($pid));
 		if (!$conn->query($query)){
 			$error = "Failed to remove content";
@@ -91,6 +92,43 @@ class Content{
 		}else{
 			return true;
 		}
+	}
+	
+	/// returns an array of Content
+	/// $type: if "all", all types of content are returned; if "post" or "page", then only that type
+	/// $offset is used to specify the offset (obviously). must not be a negative number
+	/// $count is used to specify the number of Contents to return at max, if it is zero, all contents are returned, and offset it not applied
+	/// returns false if fails, if successful, returns `Content[]`
+	public static function content_list($type = "all", $offset = 0, $count = 0){
+		$conn = qb_conn_get();
+		// generate query
+		$query = "SELECT * FROM content WHERE ";
+		// check type
+		if ($type == "post"){
+			$query .= "type='post' ";
+		}else if ($type == "page"){
+			$query .= "type='page' ";
+		}
+		// check offset & count
+		if ($count > 0){
+			$query .= "LIMIT ".qb_str_process(strval($count))." OFFSET ".qb_str_process(strval($offset));
+		}
+		
+		$res = $conn->query($query);
+		$r = false;
+		if ($res && $res->num_rows>0){
+			$i = 0;
+			$r = array_fill(0,$res->num_rows, null);
+			while ($content = $res->fetch_assoc()){
+				$r[$i] = new Content();
+				$r[$i]->content = $content["content"];
+				$r[$i]->heading = $content["heading"];
+				$r[$i]->type = $content["type"];
+				$r[$i]->id = $content["id"];
+				$i ++;
+			}
+		}
+		return $r;
 	}
 	
 	public function __set($var, $val){
