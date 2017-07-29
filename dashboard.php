@@ -95,57 +95,32 @@ if (array_key_exists("p",$_GET)){
 		}
 		template_var_add("%id%", $id);
 		template_open_as_var("%content%", "dashboard_editor");
-	}else if ($_GET["p"]=="pages"){
+	}else if ($_GET["p"]=="pages" || $_GET["p"] == "posts"){
 		//check if has to delete
-		if (array_key_exists("a",$_GET) && $_GET["a"] == "delete" && array_key_exists("id",$_GET)){
-			$r = qb_content_remove(intval($_GET["id"]));
-			if ($r==false){
-				qb_warning_add("Failed to remove content<br>".qb_error_get());
-			}else{
+		if (array_key_exists("a",$_GET) && $_GET["a"] == "delete" && $id >= 0){
+			if (Content::remove($id)){
 				qb_message_add("Content removed successfully");
+			}else{
+				qb_warning_add("Failed to remove content<br>".qb_error_get());
 			}
 		}
 		//echo em
-		$pages = qb_page_list($offset*10, 10);
-		$count = count($pages)-1;
+		$type = "post"
+		if ($_GET["p"] == "pages"){
+			$type = "page";
+		}
+		$contents = Content::content_list($type, $offset*10, 10);
+		$count = count($contents)-1;
 		$table = "";
 		for ($i = 0; $i < $count; $i ++){
-			template_var_add("%id%", $pages[$i]["id"]);
-			template_var_add("%heading%", $pages[$i]["heading"]);
-			$table .= template_open("dashboard_page");
+			template_var_add("%id%", $contents[$i]->id);
+			template_var_add("%heading%", $contents[$i]->heading);
+			$table .= template_open("dashboard_".$type);
 		}
-		template_var_add("%pages%", $table);
-		template_open_as_var("%content%", "dashboard_pages");
+		template_var_add("%".$type."s%", $table);
+		template_open_as_var("%content%", "dashboard_".$type."s");
 		//now for the offset nav...
-		if (qb_page_count() > ($offset*10) + 10){
-			$offset_next = true;
-			$echo_offset = true;
-		}else if ($offset_prev){
-			$echo_offset = true;
-		}
-	}else if ($_GET["p"]=="posts"){
-		//check if has to delete
-		if (array_key_exists("a",$_GET) && $_GET["a"] == "delete" && array_key_exists("id",$_GET)){
-			$r = qb_content_remove(intval($_GET["id"]));
-			if ($r==false){
-				qb_warning_add("Failed to remove content<br>".qb_error_get());
-			}else{
-				qb_message_add("Content removed successfully");
-			}
-		}
-		//echo em
-		$posts = qb_post_list($offset*10, 10);
-		$count = count($posts)-1;
-		$table = "";
-		for ($i = 0; $i < $count; $i ++){
-			template_var_add("%id%", $posts[$i]["id"]);
-			template_var_add("%heading%", $posts[$i]["heading"]);
-			$table .= template_open("dashboard_post");
-		}
-		template_var_add("%posts%", $table);
-		template_open_as_var("%content%", "dashboard_posts");
-		//now for the offset nav...
-		if (qb_post_count() > ($offset*10) + 10){
+		if (Content::count($type) > ($offset*10) + 10){
 			$offset_next = true;
 			$echo_offset = true;
 		}else if ($offset_prev){
