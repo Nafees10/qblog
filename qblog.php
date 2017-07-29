@@ -85,8 +85,8 @@ function qb_conn_get(){
 function qb_connect(){
 	global $qb_conn, $qb_debug;
 	$servername = "localhost";
-	$username = "qsahab";
-	$password = "12245589";
+	$username = "root";
+	$password = "";
 	$db_name = "qblog_db";
 	$qb_conn = new mysqli($servername, $username, $password, $db_name);
 	//Check it
