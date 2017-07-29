@@ -105,7 +105,7 @@ if (array_key_exists("p",$_GET)){
 			}
 		}
 		//echo em
-		$type = "post"
+		$type = "post";
 		if ($_GET["p"] == "pages"){
 			$type = "page";
 		}
@@ -152,12 +152,12 @@ if (array_key_exists("p",$_GET)){
 	}
 }else{
 	//echo em
-	$posts = qb_post_list($offset*10, 10);
+	$posts = Content::content_list("post", $offset*10, 10);
 	$count = count($posts)-1;
 	$table = "";
 	for ($i = 0; $i < $count; $i ++){
-		template_var_add("%id%", $posts[$i]["id"]);
-		template_var_add("%heading%", $posts[$i]["heading"]);
+		template_var_add("%id%", $posts[$i]->id);
+		template_var_add("%heading%", $posts[$i]->heading);
 		$table .= template_open("dashboard_post");
 	}
 	template_var_add("%posts%", $table);
