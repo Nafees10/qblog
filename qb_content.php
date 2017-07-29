@@ -4,8 +4,6 @@ include_once("qb_users.php");//used by add_post
 
 class Content{
 	private $content_id, $content_heading, $content_content, $content_type;
-	private $modified = false;
-	private $modified_id = false;
 	
 	/// loads a content from database using the id
 	/// $id is the id of the content
@@ -16,7 +14,6 @@ class Content{
 		$query = "SELECT heading, content, type FROM content WHERE id=".qb_str_process(strval($id));
 		$res = $conn->query($query);
 		
-		$modified = false;
 		if ($res){
 			if ($res->num_rows>0){
 				$c = $res->fetch_assoc;
@@ -36,23 +33,21 @@ class Content{
 	/// this will fail if none of the variables were changed.
 	/// returns true on success & false on error
 	public function update(){
-		if ($modified){
-			$heading = qb_str_process($content_heading);
-			$content = qb_str_process($content_content);
-			$type = qb_str_process($content_type);
-			$id = qb_str_process(strval($content_id));
-			$query = "UPDATE content SET heading='".$heading."', content='".$content."', type='".$type."' WHERE id=".$id;
-			
-			if ($conn->query($query)==false){
-				$error = "Failed to edit content";
-				if (qb_debug_get()){
-					$error .= "; \n".$conn->error;
-				}
-				qb_error_set($error);
-				return false;
-			}else{
-				return true;
+		$heading = qb_str_process($content_heading);
+		$content = qb_str_process($content_content);
+		$type = qb_str_process($content_type);
+		$id = qb_str_process(strval($content_id));
+		$query = "UPDATE content SET heading='".$heading."', content='".$content."', type='".$type."' WHERE id=".$id;
+		
+		if ($conn->query($query)==false){
+			$error = "Failed to edit content";
+			if (qb_debug_get()){
+				$error .= "; \n".$conn->error;
 			}
+			qb_error_set($error);
+			return false;
+		}else{
+			return true;
 		}
 	}
 	
@@ -121,7 +116,7 @@ class Content{
 			$i = 0;
 			$r = array_fill(0,$res->num_rows, null);
 			while ($content = $res->fetch_assoc()){
-				$r[$i] = new Content();
+				$r[$i] = new Content;
 				$r[$i]->content = $content["content"];
 				$r[$i]->heading = $content["heading"];
 				$r[$i]->type = $content["type"];
@@ -152,9 +147,7 @@ class Content{
 	}
 	
 	public function __set($var, $val){
-		$modified = true;
 		if ($var == "id"){
-			$modified_id = true;
 			$content_id = $val;
 		}else if ($var == "heading"){
 			$content_heading = $val;

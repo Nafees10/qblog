@@ -61,7 +61,7 @@ if (array_key_exists("p",$_GET)){
 				$content = new Content();
 				//edit/post it
 				if ($_GET["a"]=="new"){
-					$conent->heading = $_POST["post_heading"];
+					$content->heading = $_POST["post_heading"];
 					$content->content = $_POST["post_content"];
 					$content->type = $_POST["post_type"];
 					// insert, and check if successful
@@ -70,9 +70,6 @@ if (array_key_exists("p",$_GET)){
 					}else{
 						qb_message_add("Content added successfully!");
 					}
-					template_var_add("%action%", "new");
-					template_var_add("%heading%", "");
-					template_var_add("%content%", "");
 				}else if ($_GET["a"]=="edit"){
 					if ($id > -1){
 						$content->heading = $_POST["post_heading"];
@@ -83,15 +80,18 @@ if (array_key_exists("p",$_GET)){
 						}else{
 							qb_warning_add(qb_error_get());
 						}
-						template_var_add("%action%", "edit");
-						template_var_add("%heading%", $content->heading);
-						template_var_add("%content%", $content->content);
 					}
 				}
+				template_var_add("%action%", "edit");
+				template_var_add("%heading%", $content->heading);
+				template_var_add("%content%", $content->content);
 				unset($content);
 			}
 		}else{
 			template_var_add("%post_checked%", " checked");
+			template_var_add("%action%", "edit");
+			template_var_add("%heading%", "");
+			template_var_add("%content%", "");
 		}
 		template_var_add("%id%", $id);
 		template_open_as_var("%content%", "dashboard_editor");
