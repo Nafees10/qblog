@@ -113,7 +113,7 @@ class Content{
 		if ($count > 0){
 			$query .= "LIMIT ".qb_str_process(strval($count))." OFFSET ".qb_str_process(strval($offset));
 		}
-		
+		/// push result in array
 		$res = $conn->query($query);
 		$r = false;
 		if ($res && $res->num_rows>0){
@@ -129,6 +129,25 @@ class Content{
 			}
 		}
 		return $r;
+	}
+	
+	/// Returns number of content
+	/// $type, if "all": all type of content is counted, otherwise, if "post" or "page", only that type will be counted
+	public static function count($type = "all"){
+		$conn = qb_conn_get();
+		// generate query
+		if ($type == "page"){
+			$res = $conn->query("SELECT count(*) FROM content WHERE type='page'");
+		}else if ($type == "post"){
+			$res = $conn->query("SELECT count(*) FROM content WHERE type='post'");
+		}
+		// get result
+		if ($res){
+			$nRows = $res->fetch_assoc()["count(*)"];
+		}else{
+			$nRows = 0;
+		}
+		return $nRows;
 	}
 	
 	public function __set($var, $val){
