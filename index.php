@@ -3,8 +3,6 @@ include_once("qblog.php");
 include_once("qb_users.php");
 include_once("qb_content.php");
 include_once("qb_templates.php");
-/*include_once("qb_pages.php");
-include_once("qb_posts.php");*/
 session_start();
 qb_connect();
 $addr = qb_addr_get();
@@ -52,6 +50,7 @@ template_var_add("%content%", qb_setting_get(""));
 template_var_add("%offset%", qb_setting_get(""));
 template_var_add("%aside%", qb_setting_get("aside_content"));
 template_var_add("%addr%", $addr);
+// open login form if not logged in, else, show links to dashboard and logout
 if ($current_user === false){
 	template_open_as_var("%members_area%","login_form");
 }else{
@@ -59,24 +58,26 @@ if ($current_user === false){
 }
 //get the nav pages
 $nav = "";
-$pages = qb_page_list_all();
+$pages = Content::content_list("pages");
 $count = count($pages)-1;
 for ($i = 0; $i < $count; $i ++){
-	template_var_add("%heading%", $pages[$i]["heading"]);
-	template_var_add("%id%", $pages[$i]["id"]);
+	template_var_add("%heading%", $pages[$i]->heading);
+	template_var_add("%id%", $pages[$i]->id);
 	$nav .= template_open("index_nav_page");
 }
 template_var_add("%nav_pages%", $nav);
 //echo page contents:
 if (array_key_exists("con",$_GET)){
 	//echo a specific page/post
-	$con = qb_content_get(intval($_GET["con"]));
-	template_var_add("%content%", $con["content"]);
-	template_var_add("%heading%", $con["heading"]);
+	$con = new Content();
+	$con::load(intval($_GET["con"]));
+	template_var_add("%content%", $con->content);
+	template_var_add("%heading%", $con->heading);
 	template_open_as_var("%content%", "index_content");
 }else{
 	//echo the blog's home (i.e show the posts)
-	if (qb_post_count() == 0){
+	$post_count = Content::count("post")
+	if ($post_count == 0){
 		qb_message_add("No posts found.");
 	}else{
 		$echo_offset = false;
@@ -91,14 +92,14 @@ if (array_key_exists("con",$_GET)){
 			$echo_offset = true;
 		}
 		//echo posts
-		$posts = qb_post_list($offset*10, 10, true);
+		$posts = Content::content_list("post", $offset*10, 10);
 		$content = "";
 		//echo them all!
 		$count = count($posts)-1;
 		for ($i = 0; $i < $count; $i++){
-			template_var_add("%heading%",$posts[$i]["heading"]);
-			template_var_add("%content%",$posts[$i]["content"]);
-			template_var_add("%id%", $posts[$i]["id"]);
+			template_var_add("%heading%",$posts[$i]->heading);
+			template_var_add("%content%",$posts[$i]->content);
+			template_var_add("%id%", $posts[$i]->id);
 			$content .= template_open("index_post");
 		}
 		//put content in var
@@ -106,7 +107,7 @@ if (array_key_exists("con",$_GET)){
 		$content = "";//free memory?
 		
 		//check if has to echo the "offset navigator" or whatever it is
-		if (qb_post_count() > ($offset*10) + 10){
+		if ($post_count > ($offset*10) + 10){
 			$offset_next = true;
 			$echo_offset = true;
 		}
