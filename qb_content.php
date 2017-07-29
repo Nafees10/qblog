@@ -56,7 +56,7 @@ class Content{
 		}
 	}
 	
-	/// inserts this Content to the database, and changes the id to the id in the database
+	/// inserts this Content to the database, and changes the stored id to the id in the database
 	/// the id set before inserting is not considered
 	/// returns true if sucessful, false if not
 	public function insert(){
@@ -79,6 +79,7 @@ class Content{
 	}
 	
 	/// removes a content from database using the id
+	/// returns true on success, false if not
 	public static function remove($id){
 		$conn = qb_conn_get();
 		$query = "DELETE FROM content WHERE id=".qb_str_process(strval($pid));
