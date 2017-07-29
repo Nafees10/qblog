@@ -1,5 +1,4 @@
 <?php
-include_once ("qb_pages.php");
 include_once ("qb_users.php");
 
 $qb_conn = null;
