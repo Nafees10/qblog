@@ -151,33 +151,24 @@ if (array_key_exists("p",$_GET)){
 			'The GET query is invalid. Try opening another page...</content>');
 	}
 }else{
-	//check if has to delete
-		if (array_key_exists("a",$_GET) && array_key_exists("id",$_GET)){
-			$r = qb_content_remove(intval($_GET["id"]));
-			if ($r==false){
-				qb_warning_add("Failed to remove content<br>".qb_error_get());
-			}else{
-				qb_message_add("Content removed successfully");
-			}
-		}
-		//echo em
-		$posts = qb_post_list($offset*10, 10);
-		$count = count($posts)-1;
-		$table = "";
-		for ($i = 0; $i < $count; $i ++){
-			template_var_add("%id%", $posts[$i]["id"]);
-			template_var_add("%heading%", $posts[$i]["heading"]);
-			$table .= template_open("dashboard_post");
-		}
-		template_var_add("%posts%", $table);
-		template_open_as_var("%content%", "dashboard_posts");
-		//now for the offset nav...
-		if (qb_post_count() > ($offset*10) + 10){
-			$offset_next = true;
-			$echo_offset = true;
-		}else if ($offset_prev){
-			$echo_offset = true;
-		}
+	//echo em
+	$posts = qb_post_list($offset*10, 10);
+	$count = count($posts)-1;
+	$table = "";
+	for ($i = 0; $i < $count; $i ++){
+		template_var_add("%id%", $posts[$i]["id"]);
+		template_var_add("%heading%", $posts[$i]["heading"]);
+		$table .= template_open("dashboard_post");
+	}
+	template_var_add("%posts%", $table);
+	template_open_as_var("%content%", "dashboard_posts");
+	//now for the offset nav...
+	if (Content::count("post") > ($offset*10) + 10){
+		$offset_next = true;
+		$echo_offset = true;
+	}else if ($offset_prev){
+		$echo_offset = true;
+	}
 }
 //offset nav
 if ($echo_offset){
