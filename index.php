@@ -73,10 +73,11 @@ if (array_key_exists("con",$_GET)){
 	$con::load(intval($_GET["con"]));
 	template_var_add("%content%", $con->content);
 	template_var_add("%heading%", $con->heading);
+	unset($con);
 	template_open_as_var("%content%", "index_content");
 }else{
 	//echo the blog's home (i.e show the posts)
-	$post_count = Content::count("post")
+	$post_count = Content::count("post");
 	if ($post_count == 0){
 		qb_message_add("No posts found.");
 	}else{
