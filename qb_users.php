@@ -188,7 +188,23 @@ class User{
 		$conn = qb_conn_get();
 		$username = qb_str_process($username);
 		
-		$query = "SELECT id FROM users WHERE username='"
+		$query = "SELECT id FROM users WHERE username='".$username."'";
+		$res = $conn->query($query);
+		if ($res){
+			if ($res->num_rows > 0){
+				return $res->fetch_assoc()["id"];
+			}else{
+				qb_error_set("User not found");
+				return -1;
+			}
+		}else{
+			$error = "Failed to get user_id";
+			if (qb_debug_get()){
+				$error .= "; \n".$conn->error;
+			}
+			qb_error_set($error);
+			return false;
+		}
 	}
 	
 	public function __set($var, $val){
