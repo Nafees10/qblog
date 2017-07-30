@@ -193,7 +193,7 @@ class Content{
 				$this->content_type = "post";
 			}
 		}else{
-			die('variable "'.$var.'" does not exist');
+			die('variable "'.$var.'" does not exist in class Content');
 		}
 	}
 	
@@ -207,7 +207,7 @@ class Content{
 		}else if ($var == "type"){
 			return $this->content_type;
 		}else{
-			die('variable "'.$var.'" does not exist');
+			die('variable "'.$var.'" does not exist in class Content');
 		}
 	}
 }
