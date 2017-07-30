@@ -25,6 +25,12 @@ class Content{
 				qb_error_set("Content not found");
 				return false;
 			}
+		}else{
+			$error = "Failed to load content";
+			if (qb_debug_get()){
+				$error .= "; \n".$conn->error;
+			}
+			qb_error_set($error);
 		}
 		return true;
 	}
@@ -114,18 +120,22 @@ class Content{
 		/// push result in array
 		$res = $conn->query($query);
 		$r = false;
-		if ($res && $res->num_rows>0){
-			$nRows = $res->num_rows;
-			$i = 0;
-			$r = array_pad([], $nRows, null);
-			while ($i < $nRows){
-				$r[$i] = new Content;
-				$content = $res->fetch_assoc();
-				$r[$i]->content = $content["content"];
-				$r[$i]->heading = $content["heading"];
-				$r[$i]->type = $content["type"];
-				$r[$i]->id = $content["id"];
-				$i ++;
+		if ($res){
+			if ($res->num_rows>0){
+				$nRows = $res->num_rows;
+				$i = 0;
+				$r = array_pad([], $nRows, null);
+				while ($i < $nRows){
+					$r[$i] = new Content;
+					$content = $res->fetch_assoc();
+					$r[$i]->content = $content["content"];
+					$r[$i]->heading = $content["heading"];
+					$r[$i]->type = $content["type"];
+					$r[$i]->id = $content["id"];
+					$i ++;
+				}
+			}else{
+				qb_error_set("Content not found");
 			}
 		}else{
 			$error = "Failed to fetch content";
@@ -139,6 +149,7 @@ class Content{
 	
 	/// Returns number of content
 	/// $type, if "all": all type of content is counted, otherwise, if "post" or "page", only that type will be counted
+	/// returns number of content, otherwise; if fails, returns false
 	public static function count($type = "all"){
 		$conn = qb_conn_get();
 		// generate query
@@ -152,6 +163,11 @@ class Content{
 			$nRows = $res->fetch_assoc()["count(*)"];
 		}else{
 			$nRows = 0;
+			$error = "Failed to count content";
+			if (qb_debug_get()){
+				$error .= "; \n".$conn->error;
+			}
+			qb_error_set($error);
 		}
 		return $nRows;
 	}
