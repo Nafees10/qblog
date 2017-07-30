@@ -157,6 +157,8 @@ class Content{
 			$res = $conn->query("SELECT count(*) FROM content WHERE type='page'");
 		}else if ($type == "post"){
 			$res = $conn->query("SELECT count(*) FROM content WHERE type='post'");
+		}else{
+			$res = $conn->query("SELECT count(*) FROM content");
 		}
 		// get result
 		if ($res){
