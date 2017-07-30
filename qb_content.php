@@ -31,6 +31,7 @@ class Content{
 				$error .= "; \n".$conn->error;
 			}
 			qb_error_set($error);
+			return false;
 		}
 		return true;
 	}
@@ -136,6 +137,7 @@ class Content{
 				}
 			}else{
 				qb_error_set("Content not found");
+				return false;
 			}
 		}else{
 			$error = "Failed to fetch content";
@@ -143,6 +145,7 @@ class Content{
 				$error .= "; \n".$conn->error;
 			}
 			qb_error_set($error);
+			return false;
 		}
 		return $r;
 	}
@@ -170,6 +173,7 @@ class Content{
 				$error .= "; \n".$conn->error;
 			}
 			qb_error_set($error);
+			return false;
 		}
 		return $nRows;
 	}
