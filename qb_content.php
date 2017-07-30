@@ -105,24 +105,34 @@ class Content{
 		}else if ($type == "page"){
 			$query .= "type='page' ";
 		}
+		// orderby
+		$query .= "ORDER BY id DESC";
 		// check offset & count
 		if ($count > 0){
-			$query .= "LIMIT ".qb_str_process(strval($count))." OFFSET ".qb_str_process(strval($offset));
+			$query .= " LIMIT ".qb_str_process(strval($count))." OFFSET ".qb_str_process(strval($offset));
 		}
 		/// push result in array
 		$res = $conn->query($query);
 		$r = false;
 		if ($res && $res->num_rows>0){
+			$nRows = $res->num_rows;
 			$i = 0;
-			$r = array_fill(0,$res->num_rows, null);
-			while ($content = $res->fetch_assoc()){
+			$r = array_pad([], $nRows, null);
+			while ($i < $nRows){
 				$r[$i] = new Content;
+				$content = $res->fetch_assoc();
 				$r[$i]->content = $content["content"];
 				$r[$i]->heading = $content["heading"];
 				$r[$i]->type = $content["type"];
 				$r[$i]->id = $content["id"];
 				$i ++;
 			}
+		}else{
+			$error = "Failed to fetch content";
+			if (qb_debug_get() == true){
+				$error .= "; \n".$conn->error;
+			}
+			qb_error_set($error);
 		}
 		return $r;
 	}
