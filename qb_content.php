@@ -16,7 +16,7 @@ class Content{
 		
 		if ($res){
 			if ($res->num_rows>0){
-				$c = $res->fetch_assoc;
+				$c = $res->fetch_assoc();
 				$this->content_id = $id;
 				$this->content_heading = $c["heading"];
 				$this->content_content = $c["content"];
