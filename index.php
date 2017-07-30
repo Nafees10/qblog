@@ -7,6 +7,9 @@ session_start();
 qb_connect();
 $addr = qb_addr_get();
 $current_user = false;
+//<DEBUG>
+qb_debug_set(true);
+//</DEBUG>
 //check if logged in
 if (array_key_exists("uid",$_SESSION)){
 	$current_user = qb_user_get($_SESSION["uid"]);
@@ -43,12 +46,13 @@ if (array_key_exists("a",$_GET)){
 		header("Location: ".$addr);
 		die("Redirecting to index page");
 	}
-}//set all the vars
+}
+//set all the vars
 template_var_add("%title%", qb_setting_get("title"));
 template_var_add("%tagline%", qb_setting_get("tagline"));
-template_var_add("%content%", qb_setting_get(""));
-template_var_add("%offset%", qb_setting_get(""));
-template_var_add("%aside%", qb_setting_get("aside_content"));
+template_var_add("%content%", "");
+template_var_add("%offset%", "");
+template_var_add("%aside%", "");
 template_var_add("%addr%", $addr);
 // open login form if not logged in, else, show links to dashboard and logout
 if ($current_user === false){
@@ -95,24 +99,29 @@ if (array_key_exists("con",$_GET)){
 		}
 		//echo posts
 		$posts = Content::content_list("post", $offset*10, 10);
-		$content = "";
-		//echo them all!
-		$count = count($posts)-1;
-		for ($i = 0; $i < $count; $i++){
-			template_var_add("%heading%",$posts[$i]->heading);
-			template_var_add("%content%",$posts[$i]->content);
-			template_var_add("%id%", $posts[$i]->id);
-			unset($posts[$i]);
-			$content .= template_open("index_post");
-		}
-		//put content in var
-		template_var_add("%content%", $content);
-		$content = "";//free memory?
-		
-		//check if has to echo the "offset navigator" or whatever it is
-		if ($post_count > ($offset*10) + 10){
-			$offset_next = true;
-			$echo_offset = true;
+		// check if an error occured
+		if ($posts === false){
+			qb_warning_add(qb_error_get());
+		}else{
+			$content = "";
+			//echo them all!
+			$count = count($posts);
+			for ($i = 0; $i < $count; $i++){
+				template_var_add("%heading%",$posts[$i]->heading);
+				template_var_add("%content%",$posts[$i]->content);
+				template_var_add("%id%", $posts[$i]->id);
+				//unset($posts[$i]);
+				$content .= template_open("index_post");
+			}
+			//put content in var
+			template_var_add("%content%", $content);
+			$content = "";//free memory?
+			
+			//check if has to echo the "offset navigator" or whatever it is
+			if ($post_count > ($offset*10) + 10){
+				$offset_next = true;
+				$echo_offset = true;
+			}
 		}
 		
 		//check if has to echo the offset-navigator
