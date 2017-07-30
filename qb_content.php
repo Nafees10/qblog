@@ -37,7 +37,6 @@ class Content{
 	}
 	
 	/// updates the content in database, which has the id same as this one, with this one's content, heading, & type
-	/// this will fail if none of the variables were changed.
 	/// returns true on success & false on error
 	public function update(){
 		$heading = qb_str_process($this->content_heading);
@@ -47,7 +46,7 @@ class Content{
 		$query = "UPDATE content SET heading='".$heading."', content='".$content."', type='".$type."' WHERE id=".$id;
 		
 		if ($conn->query($query)==false){
-			$error = "Failed to edit content";
+			$error = "Failed to update content";
 			if (qb_debug_get()){
 				$error .= "; \n".$conn->error;
 			}
@@ -76,6 +75,8 @@ class Content{
 			qb_error_set($error);
 			return false;
 		}else{
+			// set id
+			$id = $conn->lastInsertId();
 			return true;
 		}
 	}
