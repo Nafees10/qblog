@@ -109,12 +109,12 @@ class User{
 	public static function content_list($type = "all", $offset = 0, $count = 0){
 		$conn = qb_conn_get();
 		// generate query
-		$query = "SELECT * FROM users WHERE ";
+		$query = "SELECT * FROM users ";
 		// check type
 		if ($type == "admin"){
-			$query .= "type='admin' ";
+			$query .= "WHERE type='admin' ";
 		}else if ($type == "user"){
-			$query .= "type='user' ";
+			$query .= "WHERE type='user' ";
 		}
 		// orderby
 		$query .= "ORDER BY id DESC";
@@ -180,6 +180,15 @@ class User{
 			return false;
 		}
 		return $nRows;
+	}
+	
+	/// Returns the user ID for a user using the username
+	/// on failure, returns -1
+	public static function get_user_id($username){
+		$conn = qb_conn_get();
+		$username = qb_str_process($username);
+		
+		$query = "SELECT id FROM users WHERE username='"
 	}
 	
 	public function __set($var, $val){

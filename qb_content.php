@@ -106,12 +106,12 @@ class Content{
 	public static function content_list($type = "all", $offset = 0, $count = 0){
 		$conn = qb_conn_get();
 		// generate query
-		$query = "SELECT * FROM content WHERE ";
+		$query = "SELECT * FROM content ";
 		// check type
 		if ($type == "post"){
-			$query .= "type='post' ";
+			$query .= "WHERE type='post' ";
 		}else if ($type == "page"){
-			$query .= "type='page' ";
+			$query .= "WHERE type='page' ";
 		}
 		// orderby
 		$query .= "ORDER BY id DESC";
