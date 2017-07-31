@@ -68,7 +68,7 @@ if ($current_user === null){
 }
 //get the nav pages
 $nav = "";
-$pages = Content::content_list("pages");
+$pages = Content::content_list("page");
 $count = count($pages)-1;
 for ($i = 0; $i < $count; $i ++){
 	template_var_add("%heading%", $pages[$i]->heading);
