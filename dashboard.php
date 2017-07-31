@@ -30,6 +30,7 @@ if ($current_user->type!="admin"){
  * a - used to specify action, like a=delete, a=new...
  * Post editor arguments:
  * id - if specified or greater than -1, then you're editing, else, creating new content
+ * type - type of content, only considered if new content is being written, not for editing
  */
 $echo_offset = false;
 $offset_next = false;
@@ -98,10 +99,20 @@ if (array_key_exists("p",$_GET)){
 			}
 			template_var_add("%action%", "edit");
 		}else{
-			template_var_add("%post_checked%", " checked");
 			template_var_add("%action%", "new");
 			template_var_add("%heading%", "");
 			template_var_add("%content%", "");
+			// if there content type was specified in $_GET, use it
+			if (array_key_exists("type", $_GET)){
+				if ($_GET["type"] == "page"){
+					template_var_add("%page_checked%", " checked");
+				}else if ($_GET["type"] == "post"){
+					template_var_add("%post_checked%", " checked");
+				}
+			}else{
+				// by default, post is the content type
+				template_var_add("%post_checked%", " checked");
+			}
 		}
 		template_var_add("%id%", $id);
 		template_open_as_var("%content%", "dashboard_editor");
