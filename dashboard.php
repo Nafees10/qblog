@@ -9,25 +9,27 @@ $addr = qb_addr_get();
 //is logged in?
 if (array_key_exists("uid",$_SESSION)==false){
 	header("Location: ".$addr);
+	qb_message_add("You must be logged in to access dashboard.<br>Redirecting to index page...");
 	die ("You must be logged in to access dashboard.<br>Redirecting to index page...");
 }
-$current_user = qb_user_get($_SESSION["uid"]);
-if ($current_user == false){
+$current_user = new User;
+if ($current_user->load($_SESSION["uid"]) === false){
+	qb_message_add("Your login was invalid. You have been logged out.");
 	header("Location: ".$addr);
-	$_SESSION["message"] = 'Your login was invalid. You have been logged out.';
 	unset($_SESSION["uid"]);
 	die ("Your login was invalid. Redirecting...");
 }
-if ($current_user["type"]!="admin"){
+// check if is admin
+if ($current_user->type!="admin"){
+	qb_warning_add('Your account is not authorized to access dashboard.');
 	header("Location: ".$addr);
-	$_SESSION["message"] = 'Your account cannot access dashboard.';
-	die ("Only admins can access dashboard.");
+	die ("Your account is not authorized to access dashboard.");
 }
 /*$_GET arguments:
  * p - to specify what to open, post 'editor', 'pages'_list, 'posts'_list, or 'settings'
- * a - used to delete content
+ * a - used to specify action, like a=delete, a=new...
  * Post editor arguments:
- * id - if specified, then you're editing, else, creating new content
+ * id - if specified or greater than -1, then you're editing, else, creating new content
  */
 $echo_offset = false;
 $offset_next = false;
@@ -44,8 +46,7 @@ template_var_add("%tagline%", qb_setting_get("tagline"));
 template_var_add("%addr%", $addr);
 //Now code to deal with dashboard home, post editor, and settings editor
 if (array_key_exists("p",$_GET)){
-	//set all the vars
-	//now check whether to open post editor, settings, posts, or pages
+	//check whether to open post editor, settings, posts, or pages
 	if ($_GET["p"]=="editor"){
 		//check if has to edit
 		$id = -1;
