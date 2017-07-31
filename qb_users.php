@@ -77,9 +77,10 @@ class User{
 			$passhash = qb_str_process($this->user_passhash);
 			$type = qb_str_process($this->user_type);
 			$query = "INSERT INTO users(username, password, type) VALUES('".$username."','".$passhash."','".$type."')";
+			
 			if ($conn->query($query)){
 				// set id
-				$this->user_id = $conn->lastInsertId("id");
+				$this->user_id = $conn->insert_id;
 				return true;
 			}else{
 				$error = "Failed to insert user";
