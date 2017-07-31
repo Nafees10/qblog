@@ -6,13 +6,19 @@ include_once("qb_templates.php");
 session_start();
 qb_connect();
 $addr = qb_addr_get();
-$current_user = false;
+$current_user = null;
 //<DEBUG>
 qb_debug_set(true);
 //</DEBUG>
 //check if logged in
 if (array_key_exists("uid",$_SESSION)){
-	$current_user = qb_user_get($_SESSION["uid"]);
+	$current_user = new User;
+	if ($current_user->load($_SESSION["uid"]) == false){
+		qb_warning_add("Failed to authenticate:\n".qb_error_get());
+		unset($_SESSION["uid"]);
+		unset($current_user);
+		$current_user = null;
+	}
 }
 //check if login was attempted
 if (array_key_exists("login_username",$_POST) && array_key_exists("login_password",$_POST)){
@@ -27,7 +33,7 @@ if (array_key_exists("login_username",$_POST) && array_key_exists("login_passwor
 		$username = $_POST["login_username"];
 		$password = $_POST["login_password"];
 		$uid = qb_login_verify($username, $password);
-		if ($uid===false || $uid === 0){
+		if ($uid===false){
 			qb_message_add("Login failed");
 		}else{
 			$_SESSION["uid"] = $uid;
@@ -55,7 +61,7 @@ template_var_add("%offset%", "");
 template_var_add("%aside%", "");
 template_var_add("%addr%", $addr);
 // open login form if not logged in, else, show links to dashboard and logout
-if ($current_user === false){
+if ($current_user === null){
 	template_open_as_var("%members_area%","login_form");
 }else{
 	template_open_as_var("%members_area%", "members_area");
