@@ -5,52 +5,39 @@ session_start();
 //check if data was submitted
 //check if blog is already set up, by checking if a user exists
 qb_connect();
-if (qb_user_count()>0){
+if (User::count("all")>0){
 	die ("Blog is already set up! Delete this file for security reasons");
 }
 if (array_key_exists("title",$_POST)){
 	//data was submitted
 	//check if everything was submitted
 	$error = "";
-	if ($_POST["title"]==""){
-		$error .= 'No blog title entered<br>';
-	}
 	if (array_key_exists("tagline",$_POST)==false){
 		$error .= 'No tagline entered<br>';
 	}
 	if (array_key_exists("admin_username",$_POST)==false){
 		$error .= 'No administrator username entered<br>';
-	}else{
-		//validate username
-		if (qb_username_validate($_POST["admin_username"])==false){
-			$error .= qb_error_get().'<br>';
-		}
 	}
-	if (array_key_exists("admin_password",$_POST)==false){
-		$error .= 'No administrator password entered<br>';
-	}else{
-		//validate password
-		if (qb_password_validate($_POST["admin_password"])==false){
-			$error .= qb_error_get().'<br>';
-		}
+	if (array_key_exists("admin_password",$_POST)==false || strlen($_POST["admin_password"]) < 8){
+		$error .= 'No administrator password entered, or password is less than 8 characters<br>';
 	}
 	//now if ($error=="") {everything's fine}else{throw errors}
 	if ($error==""){
 		//set up the blog
 		//set up qb
 		if (qb_setup_db()==false){
-			die ('An unexpected error occured while setting up database:<br>'.qb_error_get());
+			die ('Unexpected error occured while setting up database:<br>'.qb_error_get());
 		}
 		//now add admin user
 		if (qb_user_add($_POST["admin_username"],$_POST["admin_password"],"admin")==false){
-			die ('An unexpected error occured while adding admin user:<br>'.qb_error_get());
+			die ('Unexpected error occured while adding admin user:<br>'.qb_error_get());
 		}
 		//now set the tagline & blog title
 		if (qb_setting_add("title",$_POST["title"])==false){
-			die ("An unexpected error occured while setting blog title:<br>".qb_error_get());
+			die ("Unexpected error occured while setting blog title:<br>".qb_error_get());
 		}
 		if (qb_setting_add("tagline",$_POST["tagline"])==false){
-			die ("An unexpected error occured while setting blog tagline:<br>".qb_error_get());
+			die ("Unexpected error occured while setting blog tagline:<br>".qb_error_get());
 		}
 		//if the execution reached here, it's error free
 		header("Location: ".qb_addr_get());
