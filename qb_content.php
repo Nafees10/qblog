@@ -76,7 +76,7 @@ class Content{
 			return false;
 		}else{
 			// set id
-			$id = $conn->lastInsertId();
+			$this->content_id = $conn->insert_id;
 			return true;
 		}
 	}
@@ -108,10 +108,8 @@ class Content{
 		// generate query
 		$query = "SELECT * FROM content ";
 		// check type
-		if ($type == "post"){
-			$query .= "WHERE type='post' ";
-		}else if ($type == "page"){
-			$query .= "WHERE type='page' ";
+		if ($type != "all"){
+			$query .= "WHERE type='".qb_str_process($type)."' ";
 		}
 		// orderby
 		$query .= "ORDER BY id DESC";
@@ -157,10 +155,8 @@ class Content{
 	public static function count($type = "all"){
 		$conn = qb_conn_get();
 		// generate query
-		if ($type == "page"){
-			$res = $conn->query("SELECT count(*) FROM content WHERE type='page'");
-		}else if ($type == "post"){
-			$res = $conn->query("SELECT count(*) FROM content WHERE type='post'");
+		if ($type != "all"){
+			$res = $conn->query("SELECT count(*) FROM content WHERE type='".qb_str_process($type)."'");
 		}else{
 			$res = $conn->query("SELECT count(*) FROM content");
 		}
