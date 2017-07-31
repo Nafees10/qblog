@@ -66,21 +66,20 @@ class User{
 	/// the id set before inserting is not considered
 	/// the id is changed to the actual id that was stored in database
 	public function insert(){
-		$conn = qb_conn_get();
-		
-		$username = qb_str_process($this->user_username);
-		$passhash = qb_str_process($this->user_passhash);
-		$type = qb_str_process($this->user_type);
-		
 		// check if username is already used
 		if (User::get_user_id($this->user_username) >= 0){
 			qb_error_set("Username is already in use");
 			return false;
 		}else{
+			$conn = qb_conn_get();
+			
+			$username = qb_str_process($this->user_username);
+			$passhash = qb_str_process($this->user_passhash);
+			$type = qb_str_process($this->user_type);
 			$query = "INSERT INTO users(username, password, type) VALUES('".$username."','".$passhash."','".$type."')";
 			if ($conn->query($query)){
 				// set id
-				$user_id = $conn->lastInsertId();
+				$this->user_id = $conn->lastInsertId("id");
 				return true;
 			}else{
 				$error = "Failed to insert user";
@@ -120,10 +119,8 @@ class User{
 		// generate query
 		$query = "SELECT * FROM users ";
 		// check type
-		if ($type == "admin"){
-			$query .= "WHERE type='admin' ";
-		}else if ($type == "user"){
-			$query .= "WHERE type='user' ";
+		if ($type != "all"){
+			$query .= "WHERE type='".qb_str_process($type)."' ";
 		}
 		// orderby
 		$query .= "ORDER BY id DESC";
@@ -169,10 +166,8 @@ class User{
 	public static function count($type = "all"){
 		$conn = qb_conn_get();
 		// generate query
-		if ($type == "admin"){
-			$res = $conn->query("SELECT count(*) FROM users WHERE type='admin'");
-		}else if ($type == "user"){
-			$res = $conn->query("SELECT count(*) FROM users WHERE type='user'");
+		if ($type != "all"){
+			$res = $conn->query("SELECT count(*) FROM users WHERE type='".qb_str_process($type)."'");
 		}else{
 			$res = $conn->query("SELECT count(*) FROM users");
 		}
