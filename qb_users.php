@@ -6,7 +6,7 @@ class User{
 	
 	/// Loads the user with $id from database to this class
 	/// returns true on succcess, false on error
-	public function load(){
+	public function load($id){
 		$conn = qb_conn_get();
 		
 		$query = "SELECT * FROM users WHERE id=".qb_str_process(strval($id));
@@ -14,10 +14,10 @@ class User{
 		if ($res){
 			if ($res->num_rows > 0){
 				$r = $res->fetch_assoc();
-				$user_username = $r["username"];
-				$user_passhash = $r["password"];
-				$user_type = $r["type"];
-				$user_id = $r["id"];
+				$this->user_username = $r["username"];
+				$this->user_passhash = $r["password"];
+				$this->user_type = $r["type"];
+				$this->user_id = $r["id"];
 				return true;
 			}else{
 				qb_error_set("User not found");
