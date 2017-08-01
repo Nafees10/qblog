@@ -118,8 +118,8 @@ if (array_key_exists("p",$_GET)){
 		template_open_as_var("%content%", "dashboard_editor");
 	}else if ($_GET["p"]=="pages" || $_GET["p"] == "posts"){
 		//check if has to delete
-		if (array_key_exists("a",$_GET) && $_GET["a"] == "delete" && $id >= 0){
-			if (Content::remove($id)){
+		if (array_key_exists("a",$_GET) && $_GET["a"] == "delete" && array_key_exists("id", $_GET) && intval($_GET["id"]) >= 0){
+			if (Content::remove(intval($_GET["id"]))){
 				qb_message_add("Content removed successfully");
 			}else{
 				qb_warning_add("Failed to remove content<br>".qb_error_get());
@@ -162,10 +162,11 @@ if (array_key_exists("p",$_GET)){
 		}
 		template_open_as_var("%content%", "dashboard_settings");
 	}else if ($_GET["p"]=="delete" && array_key_exists("id",$_GET)){
-		$con = qb_content_get(intval($_GET["id"]));
-		template_var_add("%content_type%", $con["type"].'s');
-		template_var_add("%header%", $con["heading"]);
-		template_var_add("%id%", $_GET["id"]);
+		$con = new Content;
+		$con->load(intval($_GET["id"]));
+		template_var_add("%content_type%", $con->type.'s');
+		template_var_add("%header%", $con->heading);
+		template_var_add("%id%", strval($con->id));
 		
 		template_open_as_var("%content%", "dashboard_delete_confirm");
 	}else{
