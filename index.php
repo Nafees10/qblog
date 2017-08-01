@@ -3,6 +3,7 @@ include_once("qblog.php");
 include_once("qb_users.php");
 include_once("qb_content.php");
 include_once("qb_templates.php");
+include_once("parsedown/Parsedown.php");
 session_start();
 qb_connect();
 $addr = qb_addr_get();
@@ -82,7 +83,9 @@ if (array_key_exists("con",$_GET)){
 	//echo a specific page/post
 	$con = new Content();
 	$con->load(intval($_GET["con"]));
-	template_var_add("%content%", $con->content);
+	$parsedown = new Parsedown;
+	template_var_add("%content%", $parsedown->text($con->content));
+	unset($parsedown);
 	template_var_add("%heading%", $con->heading);
 	unset($con);
 	template_open_as_var("%content%", "index_content");
@@ -112,13 +115,15 @@ if (array_key_exists("con",$_GET)){
 			$content = "";
 			//echo them all!
 			$count = count($posts);
+			$parsedown = new Parsedown;
 			for ($i = 0; $i < $count; $i++){
 				template_var_add("%heading%",$posts[$i]->heading);
-				template_var_add("%content%",$posts[$i]->content);
+				template_var_add("%content%",$parsedown->text($posts[$i]->content));
 				template_var_add("%id%", $posts[$i]->id);
 				//unset($posts[$i]);
 				$content .= template_open("index_post");
 			}
+			unset($parsedown);
 			//put content in var
 			template_var_add("%content%", $content);
 			$content = "";//free memory?
