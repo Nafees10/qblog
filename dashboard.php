@@ -55,8 +55,8 @@ if (array_key_exists("p",$_GET)){
 			$id = intval($_GET["id"]);
 		}
 		//mark post and page as unchecked
-		template_var_add("%post_checked%", " ");
-		template_var_add("%page_checked%", " ");
+		template_var_add("%post_checked%", "");
+		template_var_add("%page_checked%", "");
 		
 		template_var_add("%heading%", "");
 		template_var_add("%content%", "");
@@ -91,9 +91,9 @@ if (array_key_exists("p",$_GET)){
 				template_var_add("%heading%", $content->heading);
 				template_var_add("%content%", $content->content);
 				if ($content->type == "post"){
-					template_var_add("%post_checked%", " checked");
+					template_var_add("%post_checked%", "checked");
 				}else{
-					template_var_add("%page_checked%", " checked");
+					template_var_add("%page_checked%", "checked");
 				}
 				unset($content);
 			}
@@ -113,13 +113,13 @@ if (array_key_exists("p",$_GET)){
 			// if there content type was specified in $_GET, use it
 			if (array_key_exists("type", $_GET)){
 				if ($_GET["type"] == "page"){
-					template_var_add("%page_checked%", " checked");
+					template_var_add("%page_checked%", "checked");
 				}else if ($_GET["type"] == "post"){
-					template_var_add("%post_checked%", " checked");
+					template_var_add("%post_checked%", "checked");
 				}
 			}else{
 				// by default, post is the content type
-				template_var_add("%post_checked%", " checked");
+				template_var_add("%post_checked%", "checked");
 			}
 		}
 		template_var_add("%id%", $id);
