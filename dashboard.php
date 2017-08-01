@@ -99,9 +99,17 @@ if (array_key_exists("p",$_GET)){
 			}
 			template_var_add("%action%", "edit");
 		}else{
+			// if an id is provided, load up that content
+			if ($id >= 0){
+				$content = new Content;
+				$content->load($id);
+				template_var_add("%heading%", $content->heading);
+				template_var_add("%content%", $content->content);
+			}else{
+				template_var_add("%heading%", "");
+				template_var_add("%content%", "");
+			}
 			template_var_add("%action%", "new");
-			template_var_add("%heading%", "");
-			template_var_add("%content%", "");
 			// if there content type was specified in $_GET, use it
 			if (array_key_exists("type", $_GET)){
 				if ($_GET["type"] == "page"){
@@ -174,25 +182,8 @@ if (array_key_exists("p",$_GET)){
 			'The GET query is invalid. Try opening another page...</content>');
 	}
 }else{
-	//echo em
-	$posts = Content::content_list("post", $offset*10, 10);
-	$count = count($posts)-1;
-	$table = "";
-	for ($i = 0; $i < $count; $i ++){
-		template_var_add("%id%", $posts[$i]->id);
-		template_var_add("%heading%", $posts[$i]->heading);
-		unset($posts[$i]);
-		$table .= template_open("dashboard_post");
-	}
-	template_var_add("%posts%", $table);
-	template_open_as_var("%content%", "dashboard_posts");
-	//now for the offset nav...
-	if (Content::count("post") > ($offset*10) + 10){
-		$offset_next = true;
-		$echo_offset = true;
-	}else if ($offset_prev){
-		$echo_offset = true;
-	}
+	// redirect to posts
+	header("Location: ".$addr."/dashboard.php?p=posts");
 }
 //offset nav
 if ($echo_offset){
