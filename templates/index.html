@@ -1,5 +1,4 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.6.4/showdown.min.js"></script>
 <html>
 	<head>
 		<title>
@@ -35,12 +34,4 @@
 			</content>
 		</aside>
 	</body>
-	<script>
-	//JS to convert markdown to html
-	var converter = new showdown.Converter();
-	var posts = document.getElementsByClassName("md");
-	for (var i = 0; i < posts.length; i++){
-		posts[i].innerHTML = converter.makeHtml(posts[i].innerHTML);
-	}
-	</script>
 </html>
