@@ -133,10 +133,10 @@ class User{
 		$res = $conn->query($query);
 		$r = false;
 		if ($res){
-			if ($res->num_rows>0){
-				$nRows = $res->num_rows;
+			$nRows = $res->num_rows;
+			$r = array_pad([], $nRows, null);
+			if ($nRows>0){
 				$i = 0;
-				$r = array_pad([], $nRows, null);
 				while ($i < $nRows){
 					$r[$i] = new User;
 					$content = $res->fetch_assoc();
@@ -146,10 +146,8 @@ class User{
 					$r[$i]->id = $content["id"];
 					$i ++;
 				}
-			}else{
-				qb_error_set("User not found");
-				return false;
 			}
+			return $r;
 		}else{
 			$error = "Failed to fetch users";
 			if (qb_debug_get() == true){
