@@ -131,7 +131,7 @@ if (array_key_exists("p",$_GET)){
 			$type = "page";
 		}
 		$contents = Content::content_list($type, $offset*10, 10);
-		$count = count($contents)-1;
+		$count = count($contents);
 		$table = "";
 		for ($i = 0; $i < $count; $i ++){
 			template_var_add("%id%", $contents[$i]->id);
