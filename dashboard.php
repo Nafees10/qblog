@@ -42,8 +42,8 @@ if (array_key_exists("offset", $_GET)){
 if ($offset > 0){
 	$offset_prev = true;
 }
-template_var_add("%title%", qb_setting_get("title"));
-template_var_add("%tagline%", qb_setting_get("tagline"));
+template_var_add("%title%", htmlentities(qb_setting_get("title"), ENT_QUOTES));
+template_var_add("%tagline%", htmlentities(qb_setting_get("tagline"), ENT_QUOTES));
 template_var_add("%addr%", $addr);
 //Now code to deal with dashboard home, post editor, and settings editor
 if (array_key_exists("p",$_GET)){
@@ -89,8 +89,8 @@ if (array_key_exists("p",$_GET)){
 						}
 					}
 				}
-				template_var_add("%heading%", $content->heading);
-				template_var_add("%content%", $content->content);
+				template_var_add("%heading%", htmlentities($content->heading, ENT_QUOTES));
+				template_var_add("%content%", htmlentities($content->content, ENT_QUOTES));
 				if ($content->type == "post"){
 					template_var_add("%post_checked%", "checked");
 				}else{
@@ -104,8 +104,8 @@ if (array_key_exists("p",$_GET)){
 			if ($id >= 0){
 				$content = new Content;
 				$content->load($id);
-				template_var_add("%heading%", $content->heading);
-				template_var_add("%content%", $content->content);
+				template_var_add("%heading%", htmlentities($content->heading, ENT_QUOTES));
+				template_var_add("%content%", htmlentities($content->content, ENT_QUOTES));
 				template_var_add("%action%", "edit");
 			}else{
 				template_var_add("%heading%", "");
@@ -145,7 +145,7 @@ if (array_key_exists("p",$_GET)){
 		$table = "";
 		for ($i = 0; $i < $count; $i ++){
 			template_var_add("%id%", $contents[$i]->id);
-			template_var_add("%heading%", $contents[$i]->heading);
+			template_var_add("%heading%", htmlentities($contents[$i]->heading, ENT_QUOTES));
 			unset($contents[$i]);
 			$table .= template_open("dashboard_".$type);
 		}
@@ -175,7 +175,7 @@ if (array_key_exists("p",$_GET)){
 		$con = new Content;
 		$con->load(intval($_GET["id"]));
 		template_var_add("%content_type%", $con->type.'s');
-		template_var_add("%header%", $con->heading);
+		template_var_add("%header%", htmlentities($con->heading, ENT_QUOTES));
 		template_var_add("%id%", strval($con->id));
 		
 		template_open_as_var("%content%", "dashboard_delete_confirm");
