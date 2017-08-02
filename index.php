@@ -72,7 +72,7 @@ $nav = "";
 $pages = Content::content_list("page");
 $count = count($pages);
 for ($i = 0; $i < $count; $i ++){
-	template_var_add("%heading%", $pages[$i]->heading);
+	template_var_add("%heading%", htmlentities($pages[$i]->heading, ENT_QUOTES));
 	template_var_add("%id%", $pages[$i]->id);
 	unset($pages[$i]);
 	$nav .= template_open("index_nav_page");
@@ -84,9 +84,9 @@ if (array_key_exists("con",$_GET)){
 	$con = new Content();
 	$con->load(intval($_GET["con"]));
 	$parsedown = new Parsedown;
-	template_var_add("%content%", $parsedown->text(htmlentities($con->content)));
+	template_var_add("%content%", $parsedown->text(htmlentities($con->content, ENT_QUOTES)));
 	unset($parsedown);
-	template_var_add("%heading%", htmlentities($con->heading));
+	template_var_add("%heading%", htmlentities($con->heading, ENT_QUOTES));
 	unset($con);
 	template_open_as_var("%content%", "index_content");
 }else{
@@ -117,8 +117,8 @@ if (array_key_exists("con",$_GET)){
 			$count = count($posts);
 			$parsedown = new Parsedown;
 			for ($i = 0; $i < $count; $i++){
-				template_var_add("%heading%", htmlentities($posts[$i]->heading));
-				template_var_add("%content%", $parsedown->text(htmlentities($posts[$i]->content)));
+				template_var_add("%heading%", htmlentities($posts[$i]->heading, ENT_QUOTES));
+				template_var_add("%content%", $parsedown->text(htmlentities($posts[$i]->content, ENT_QUOTES)));
 				template_var_add("%id%", $posts[$i]->id);
 				//unset($posts[$i]);
 				$content .= template_open("index_post");
