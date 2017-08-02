@@ -80,7 +80,8 @@ if (array_key_exists("p",$_GET)){
 					if ($id > -1){
 						$content->heading = $_POST["post_heading"];
 						$content->content = $_POST["post_content"];
-						$content->type = $_POST["type"];
+						$content->type = $_POST["post_type"];
+						$content->id = $id;
 						if ($content->update()){
 							qb_message_add("Content updated successfully!");
 						}else{
@@ -105,11 +106,12 @@ if (array_key_exists("p",$_GET)){
 				$content->load($id);
 				template_var_add("%heading%", $content->heading);
 				template_var_add("%content%", $content->content);
+				template_var_add("%action%", "edit");
 			}else{
 				template_var_add("%heading%", "");
 				template_var_add("%content%", "");
+				template_var_add("%action%", "new");
 			}
-			template_var_add("%action%", "new");
 			// if there content type was specified in $_GET, use it
 			if (array_key_exists("type", $_GET)){
 				if ($_GET["type"] == "page"){
