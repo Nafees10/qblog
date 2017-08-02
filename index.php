@@ -55,15 +55,15 @@ if (array_key_exists("a",$_GET)){
 	}
 }
 //set all the vars
-template_var_add("%title%", qb_setting_get("title"));
-template_var_add("%tagline%", qb_setting_get("tagline"));
+template_var_add("%title%", htmlentities(qb_setting_get("title"), ENT_QUOTES));
+template_var_add("%tagline%", htmlentities(qb_setting_get("tagline"), ENT_QUOTES));
 template_var_add("%content%", "");
 template_var_add("%offset%", "");
 template_var_add("%aside%", "");
 template_var_add("%addr%", $addr);
 // open login form if not logged in, else, show links to dashboard and logout
 if ($current_user === null){
-	template_open_as_var("%members_area%","login_form");
+	template_open_as_var("%members_area%", "login_form");
 }else{
 	template_open_as_var("%members_area%", "members_area");
 }
