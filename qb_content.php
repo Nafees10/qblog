@@ -11,13 +11,13 @@ class Content{
 	public function load($id){
 		$conn = qb_conn_get();
 		
-		$query = "SELECT heading, content, type FROM content WHERE id=".qb_str_process(strval($id));
+		$query = "SELECT * FROM content WHERE id=".qb_str_process(strval($id));
 		$res = $conn->query($query);
 		
 		if ($res){
 			if ($res->num_rows>0){
 				$c = $res->fetch_assoc();
-				$this->content_id = $id;
+				$this->content_id = $c["id"];
 				$this->content_heading = $c["heading"];
 				$this->content_content = $c["content"];
 				$this->content_type = $c["type"];
@@ -42,9 +42,9 @@ class Content{
 		$heading = qb_str_process($this->content_heading);
 		$content = qb_str_process($this->content_content);
 		$type = qb_str_process($this->content_type);
-		$id = qb_str_process(strval($content_id));
+		$id = qb_str_process(strval($this->content_id));
 		$query = "UPDATE content SET heading='".$heading."', content='".$content."', type='".$type."' WHERE id=".$id;
-		
+		$conn = qb_conn_get();
 		if ($conn->query($query)==false){
 			$error = "Failed to update content";
 			if (qb_debug_get()){
