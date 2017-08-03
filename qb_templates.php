@@ -5,6 +5,7 @@ include_once("qb_content.php");
 //templates
 
 $template_vars = array();
+$template_name = "default";
 
 function template_var_add($var, $val){
 	global $template_vars;
@@ -28,7 +29,7 @@ function template_vars_set($new_vars){
 
 function template_open($fname){
 	global $template_vars;
-	$tmpl = file_get_contents("templates".DIRECTORY_SEPARATOR.$fname.".html");
+	$tmpl = file_get_contents("templates".DIRECTORY_SEPARATOR.$template_name.DIRECTORY_SEPARATOR.$fname.".html");
 	return strtr($tmpl, $template_vars);
 }
 
