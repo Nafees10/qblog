@@ -36,7 +36,6 @@ if (array_key_exists("title",$_POST)){
 	if ($error==""){
 		// first set the user's username etc, coz setting them validate-checks them
 		$user = new User;
-		$user->type = "admin";
 		$user->username = $_POST["admin_username"];
 		if ($user->username != $_POST["admin_username"]){
 			$error .= qb_error_get()."<br>";
@@ -54,6 +53,7 @@ if (array_key_exists("title",$_POST)){
 				drop_db();
 			}
 			//now add admin user
+			$user->type = "admin";
 			if ($user->insert()===false){
 				die ('Unexpected error occured while adding admin user:<br>'.qb_error_get());
 				drop_db();

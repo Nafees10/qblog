@@ -224,10 +224,10 @@ class User{
 				$this->user_passhash = password_hash($val, PASSWORD_DEFAULT);
 			}
 		}else if ($var == "type"){
-			$this->user_type == $val;
-			if ($this->user_type != "admin" && $this->user_type != "user"){
-				$this->user_type = "user";
+			if ($val !== "admin" && $val !== "user"){
+				$val = "user";
 			}
+			$this->user_type = $val;
 		}else if ($var == "id"){
 			$this->user_id = $val;
 		}else{
