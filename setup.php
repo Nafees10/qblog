@@ -2,12 +2,23 @@
 include_once ("qblog.php");
 include_once ("qb_users.php");
 session_start();
-//check if data was submitted
 //check if blog is already set up, by checking if a user exists
 qb_connect();
 if (User::count("all")>0){
 	die ("Blog is already set up! Delete this file for security reasons");
 }
+/// function to drop all tables, called when an error occurs during setup, and all progress should be reversed
+function drop_db(){
+	$conn = qb_conn_get();
+	$query = "DROP TABLE users; DROP TABLE content; DROP TABLE settings";
+	if ($conn->query($query)){
+		return true;
+	}else{
+		qb_error_set($conn->error);
+		return false;
+	}
+}
+//check if data was submitted
 if (array_key_exists("title",$_POST)){
 	//data was submitted
 	//check if everything was submitted
@@ -40,17 +51,26 @@ if (array_key_exists("title",$_POST)){
 			//set up database
 			if (qb_setup_db()===false){
 				die ('Unexpected error occured while setting up database:<br>'.qb_error_get());
+				drop_db();
 			}
 			//now add admin user
 			if ($user->insert()===false){
 				die ('Unexpected error occured while adding admin user:<br>'.qb_error_get());
+				drop_db();
 			}
 			//now set the tagline & blog title
 			if (qb_setting_add("title",$_POST["title"])===false){
 				die ("Unexpected error occured while setting blog title:<br>".qb_error_get());
+				drop_db();
 			}
 			if (qb_setting_add("tagline",$_POST["tagline"])===false){
 				die ("Unexpected error occured while setting blog tagline:<br>".qb_error_get());
+				drop_db();
+			}
+			// default template
+			if (qb_setting_add("template", "default") === false){
+				die ("Unexpected error occured while setting default template<br>".qb_error_get());
+				drop_db();
 			}
 			//if the execution reached here, it's error free
 			header("Location: ".qb_addr_get());
