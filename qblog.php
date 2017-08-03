@@ -203,7 +203,7 @@ function qb_username_validate($username){
 	if (preg_match('/^[a-zA-Z0-9]{4,}$/', $username)){
 		return true;
 	}else{
-		qb_error = "username must be at least 4 characters long, and can only have alphabets and numbers";
+		$qb_error = "username must be at least 4 characters long, and can only have alphabets and numbers";
 		return false;
 	}
 }
