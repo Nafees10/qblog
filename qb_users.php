@@ -67,7 +67,7 @@ class User{
 	/// the id is changed to the actual id that was stored in database
 	public function insert(){
 		// check if username is already used
-		if (User::get_user_id($this->user_username) >= 0){
+		if (User::get_user_id($this->user_username) !== false){
 			qb_error_set("Username is already in use");
 			return false;
 		}else{
@@ -198,7 +198,7 @@ class User{
 				return $res->fetch_assoc()["id"];
 			}else{
 				qb_error_set("User not found");
-				return -1;
+				return false;
 			}
 		}else{
 			$error = "Failed to get user_id";
