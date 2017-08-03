@@ -200,24 +200,12 @@ function qb_setting_modify($setting, $value){
 //For login verification & validation
 function qb_username_validate($username){
 	global $qb_error;
-	$len = strlen($username);
-	if ($len<4){
-		$qb_error = "username must be at least 4 characters long.";
+	if (preg_match('/^[a-zA-Z0-9]{4,}$/', $username)){
+		return true;
+	}else{
+		qb_error = "username must be at least 4 characters long, and can only have alphabets and numbers";
 		return false;
 	}
-	if ($len>16){
-		$qb_error = "username cannot be more than 16 characters.";
-		return false;
-	}
-	//now scan it
-	for ($i = 0;$i<$len;$i++){
-		if (stripos("qwertyuiopasdfghjklzxcvbnm1234567890_",$username[$i])==false){
-			$qb_error = "username can only contain alphabets, numbers, and underscore.";
-			return false;
-		}
-	}
-	//no errors found till now, so:
-	return true;
 }
 
 function qb_password_validate($password){
@@ -227,8 +215,8 @@ function qb_password_validate($password){
 		$qb_error = "password must be at least 8 characters.";
 		return false;
 	}
-	if ($len>40){
-		$qb_error = "password cannot contain more than 40 characters.";
+	if ($len>70){
+		$qb_error = "password cannot contain more than 70 characters.";
 		return false;
 	}
 	return true;
