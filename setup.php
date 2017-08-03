@@ -35,21 +35,21 @@ if (array_key_exists("title",$_POST)){
 		if ($user->passhash == $prev_hash){
 			$error .= qb_error_get();
 		}
-		if ($user_error == ""){
+		if ($error == ""){
 			//set up the blog
 			//set up database
-			if (qb_setup_db()==false){
+			if (qb_setup_db()===false){
 				die ('Unexpected error occured while setting up database:<br>'.qb_error_get());
 			}
 			//now add admin user
-			if ($user->insert()){
+			if ($user->insert()===false){
 				die ('Unexpected error occured while adding admin user:<br>'.qb_error_get());
 			}
 			//now set the tagline & blog title
-			if (qb_setting_add("title",$_POST["title"])==false){
+			if (qb_setting_add("title",$_POST["title"])===false){
 				die ("Unexpected error occured while setting blog title:<br>".qb_error_get());
 			}
-			if (qb_setting_add("tagline",$_POST["tagline"])==false){
+			if (qb_setting_add("tagline",$_POST["tagline"])===false){
 				die ("Unexpected error occured while setting blog tagline:<br>".qb_error_get());
 			}
 			//if the execution reached here, it's error free
