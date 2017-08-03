@@ -227,16 +227,28 @@ function qb_login_verify($username, $password){
 	$username = qb_str_process($username);
 	$query = "SELECT id, password FROM users WHERE username='".$username."'";
 	$res = $qb_conn->query($query);
-	if ($res && $res->num_rows==1){
-		$row = $res->fetch_assoc();
-		$hash = $row["password"];
-		if (password_verify($password, $hash)){
-			return $row["id"];
+	if ($res){
+		if ($res->num_rows == 1){
+			$row = $res->fetch_assoc();
+			$hash = $row["password"];
+			if (password_verify($password, $hash)){
+				return $row["id"];
+			}else{
+				$qb_error = "Wrong username or password";
+				return false;
+			}
 		}else{
+			$qb_error = "Wrong username or password";
 			return false;
 		}
+	}else{
+		$qb_error = "Failed to verify user";
+		if ($qb_debug){
+			$qb_error .= "; \n".$qb_conn->error;
+		}
+		return false;
 	}
-	return 0;
+	return false;
 }
 
 ?>
