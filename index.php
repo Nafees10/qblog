@@ -15,7 +15,7 @@ qb_debug_set(true);
 if (array_key_exists("uid",$_SESSION)){
 	$current_user = new User;
 	if ($current_user->load($_SESSION["uid"]) == false){
-		qb_warning_add("Failed to authenticate:\n".qb_error_get());
+		qb_warning_add("Your login was invalid, you have been logged out");
 		unset($_SESSION["uid"]);
 		unset($current_user);
 		$current_user = null;
