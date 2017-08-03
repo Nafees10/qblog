@@ -22,5 +22,4 @@ qblog is not yet very "usable".
 1. The post editor needs some real work done on it - I think I'll get this done in the new version
 2. There is no plugin support - This feature wont be coming very soon
 3. There's only one default template, need to add more - This is something that requires me to learn some "real" frontend development (I'm not even a web dev BTW)
-4. To change a template, all the files need to be moved, need to add support for changing templates without hardcoding them - This should be easy?
-5. And lot of more work
+4. And lot of more work, mostly with eye-candy
