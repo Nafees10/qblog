@@ -9,7 +9,7 @@ $addr = qb_addr_get();
 //is logged in?
 if (array_key_exists("uid",$_SESSION)==false){
 	header("Location: ".$addr);
-	qb_message_add("You must be logged in to access dashboard.<br>Redirecting to index page...");
+	qb_message_add("You must be logged in to access dashboard.");
 	die ("You must be logged in to access dashboard.<br>Redirecting to index page...");
 }
 $current_user = new User;
