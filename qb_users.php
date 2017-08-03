@@ -212,11 +212,17 @@ class User{
 	
 	public function __set($var, $val){
 		if ($var == "username"){
-			$this->user_username = $val;
+			// check if validation is successful
+			if (qb_username_validate($val)){
+				$this->user_username = $val;
+			}
 		}else if ($var == "passhash"){
 			$this->user_passhash = $val;
 		}else if ($var == "password"){
-			$this->user_passhash = password_hash($val, PASSWORD_DEFAULT);
+			// check if validation is successful
+			if (qb_password_validate($val)){
+				$this->user_passhash = password_hash($val, PASSWORD_DEFAULT);
+			}
 		}else if ($var == "type"){
 			$this->user_type == $val;
 			if ($this->user_type != "admin" && $this->user_type != "user"){
