@@ -42,6 +42,8 @@ if (array_key_exists("offset", $_GET)){
 if ($offset > 0){
 	$offset_prev = true;
 }
+//template init
+template_init();
 template_var_add("%title%", htmlentities(qb_setting_get("title"), ENT_QUOTES));
 template_var_add("%tagline%", htmlentities(qb_setting_get("tagline"), ENT_QUOTES));
 template_var_add("%addr%", $addr);

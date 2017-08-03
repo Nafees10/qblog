@@ -8,9 +8,6 @@ session_start();
 qb_connect();
 $addr = qb_addr_get();
 $current_user = null;
-//<DEBUG>
-qb_debug_set(true);
-//</DEBUG>
 //check if logged in
 if (array_key_exists("uid",$_SESSION)){
 	$current_user = new User;
@@ -55,6 +52,8 @@ if (array_key_exists("a",$_GET)){
 		die("Redirecting to index page");
 	}
 }
+//template init
+template_init();
 //set all the vars
 template_var_add("%title%", htmlentities(qb_setting_get("title"), ENT_QUOTES));
 template_var_add("%tagline%", htmlentities(qb_setting_get("tagline"), ENT_QUOTES));
