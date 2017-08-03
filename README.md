@@ -7,6 +7,7 @@ Right now, it is in early development, although it's tested and it works, expect
 2. Open source, you can change it to your needs.
 3. Easy to create new templates. Look into the `templates/` directory, everything can be easily modified.  
 4. Features a "dashboard" from where new content can be added.  
+5. Responsive design - Although this depends on the template being used, the default template is responsive, and works well on small screens, including the dashboard.  
 5. Easy to setup, read below:  
 
 ## Setting it up
