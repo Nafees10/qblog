@@ -26,7 +26,7 @@ if (array_key_exists("login_username",$_POST) && array_key_exists("login_passwor
 	//login was attempted
 	//check if there was an previous attempt
 	if (array_key_exists("login_attempts_rem",$_SESSION)==false){
-		$_SESSION["login_attempts_rem"] = 3;
+		$_SESSION["login_attempts_rem"] = 4;
 	}
 	if ($_SESSION["login_attempts_rem"]>0){
 		$_SESSION["login_attempts_rem"] -= 1;
@@ -35,10 +35,11 @@ if (array_key_exists("login_username",$_POST) && array_key_exists("login_passwor
 		$password = $_POST["login_password"];
 		$uid = qb_login_verify($username, $password);
 		if ($uid===false){
-			qb_message_add("Login failed");
+			qb_message_add(qb_error_get());
 		}else{
 			$_SESSION["uid"] = $uid;
 			qb_message_add("Login successful");
+			unset($_SESSION["login_attempts_rem"]);
 		}
 	}else{
 		qb_warning_add("You have used all login attempts...");
