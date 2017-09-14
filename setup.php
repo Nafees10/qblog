@@ -91,7 +91,7 @@ if (array_key_exists("title",$_POST)){
 <html>
 	<head>
 		<title>QBlog - Setup</title>
-		<link rel="stylesheet" href="qs.css">
+		<link rel="stylesheet" href="templates/default/qs.css">
 	</head>
 	<body>
 		<header style="text-align: center;">
@@ -114,14 +114,14 @@ if (array_key_exists("title",$_POST)){
 				<fieldset>
 					<legend>Blog info:</legend>
 					<label>Blog title</label>
-					<input type=text name=title placeholder="blog title">
+					<input type=text name=title placeholder="blog title" autocomplete="off">
 					<label>Tagline</label>
-					<input type=text name=tagline placeholder="tagline">
+					<input type=text name=tagline placeholder="tagline" autocomplete="off">
 				</fieldset>
 				<fieldset>
 					<legend>Administrator info:</legend>
 					<label>Administrator username</label>
-					<input type=text name="admin_username" placeholder="admin">
+					<input type=text name="admin_username" placeholder="admin" autocomplete="off">
 					<label> Administrator password</label>
 					<input type=password name="admin_password" placeholder="password">
 				</fieldset>
